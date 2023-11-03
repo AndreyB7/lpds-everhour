@@ -51,7 +51,16 @@ Install dependencies:
 
 Copy Nginx config:
 
-```cp nginx/proxy.conf /etc/nginx/conf.d```
+```sudo unlink /etc/nginx/sites-available/default```
+```rm /etc/nginx/sites-available/default```
+
+```sudo cp nginx/proxy.conf /etc/nginx/conf.d```
+
+Check configs:
+```sudo nginx -t```
+
+Reload:
+```sudo nginx -s reload```
 
 ## Upload 'tokens'
 
@@ -77,3 +86,6 @@ Upload tokens folder to project root:
   "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/lpds-db%40lpds-everhour.iam.gserviceaccount.com",
   "universe_domain": "googleapis.com"
 }
+
+## Launch App
+```npm run dev```
