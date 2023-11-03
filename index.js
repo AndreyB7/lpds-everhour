@@ -31,7 +31,7 @@ const options = {
 //Firestore DB
 const fs = require('firebase-admin');
 
-const serviceAccount = require('./tokens/lpds-everhour-7c35ec277385.json');
+const serviceAccount = require('./tokens/firestore.json');
 
 fs.initializeApp({
     credential: fs.credential.cert(serviceAccount)
