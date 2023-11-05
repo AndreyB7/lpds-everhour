@@ -84,8 +84,11 @@ Upload tokens folder to project root:
 ## Development Launch App
 ```npm run dev```
 
+
 ## Production with PM2
 
 ```sudo npm install pm2 -g```
+```pm2 install typescript```
 
-```pm2 start server.ts```
+```npx tsc```
+```pm2 start build/server.ts```
