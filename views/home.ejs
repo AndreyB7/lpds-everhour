@@ -5,4 +5,14 @@
     <div>schemaTasks:
         <pre><%= schemaTasks %></pre>
     </div>
+    <% tasks.forEach(function(task){ %>
+        <div>Task:
+            <% task.forEach(function(taskData){ %>
+                <div>
+                    <%= taskData %>
+                </div>
+                <% })%>
+        </div>
+        <% }) %>
+</div>
 </div>

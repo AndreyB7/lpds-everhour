@@ -12,7 +12,8 @@ const collections = {
         name: 'log',
         docs: {
             error: 'error',
-            update: 'update'
+            update: 'update',
+            mail: 'mail'
         }
     }
 }

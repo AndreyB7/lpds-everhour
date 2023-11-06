@@ -1,21 +1,29 @@
 import express from "express";
 import { getEverhourAPIData } from "./services/everhourAPIServce";
-import { getTasksSchema, getTimeSchema, setEverhourData } from "./services/everhourDBService";
+import { getTasks, getTasksSchema, getTimeSchema, setEverhourData } from "./services/everhourDBService";
+import { sendMail } from "./services/mailerService";
+import { scheduleTask } from "./services/cronService";
 
 const app = express();
 
 app.set("view engine", "ejs")
-app.use("/assets", express.static("assets"))
 
+// routes
 app.get("/", async (req, res, next) => {
+    try {
     const timeSchema = await getTimeSchema();
     const tasksSchema = await getTasksSchema();
+    const tasks = await getTasks();
     res.render('home', {
         schemaTime: JSON.stringify( timeSchema.data()?.schema, null, 2),
         schemaTasks: JSON.stringify( tasksSchema.data()?.schema, null, 2),
+        tasks: JSON.parse( tasks.data()?.data),
         dataTime: '',
         dataTasks: ''
      })
+    } catch(e) {
+
+    }
 })
 app.get("/refresh", async (req, res, next) => {
     
@@ -38,5 +46,13 @@ app.get("/refresh", async (req, res, next) => {
         res.render("set", {info: e})
     }
 })
+
+app.get("/send", (req, res, next) => {
+    sendMail();
+    res.send('ok');
+})
+
+// scheduled tasks
+scheduleTask('44 * * * * ', sendMail);
 
 app.listen(1337, () => { console.log("Listening on port 1337") })

@@ -32,3 +32,8 @@ export const getTasksSchema = async () => {
     const everhourDb = db.collection(collections.everhour.name);
     return await everhourDb.doc(collections.everhour.docs.tasksSchema).get();
 }
+
+export const getTasks = async () => {
+    const everhourDb = db.collection(collections.everhour.name);
+    return await everhourDb.doc(collections.everhour.docs.tasks).get();
+}
