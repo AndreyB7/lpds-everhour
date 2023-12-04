@@ -19,3 +19,8 @@ export type EverhourRequestOptions = {
     tasksWithEstimate: boolean; 
     loadParentTasks: boolean; 
 }
+
+export type tParameters = {
+    fullLimit: number;
+    fullLimitString?: string;
+}

@@ -1,18 +1,43 @@
-<div style="display: flex;gap:40px">
-    <div>schemaTime:
-        <pre><%= schemaTime %></pre>
-    </div>
-    <div>schemaTasks:
-        <pre><%= schemaTasks %></pre>
-    </div>
+<style>
+    table {
+        border-collapse: collapse;
+    }
+
+    td, th {
+        white-space: nowrap;
+        padding: 10px;
+        border: 1px solid green;
+    }
+    th {
+        position:sticky;
+        top:0;
+        background:#eee;
+    }
+</style>
+<%- include('parts/nav'); %>
+<h2 style="margin: 1em 0">Month time total: <%= timeTotal %></h2>
+<table>
+    <thead>
+    <% schemaTasks.forEach(function(heading, idx){ %>
+        <th><%= idx %> - <%= heading %></th>
+    <% }) %>
+    </thead>
+    <tbody>
     <% tasks.forEach(function(task){ %>
-        <div>Task:
+        <tr>
             <% task.forEach(function(taskData){ %>
-                <div>
+                <td>
                     <%= taskData %>
-                </div>
-                <% })%>
-        </div>
-        <% }) %>
-</div>
-</div>
+                </td>
+            <% }) %>
+        </tr>
+    <% }) %>
+    <% if (!tasks.length) { %>
+        <tr>
+            <td colspan="100">
+                no tasks for current month
+            </td>
+        </tr>
+    <% } %>
+    </tbody>
+</table>

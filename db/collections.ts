@@ -1,4 +1,10 @@
 const collections = {
+    parameters: {
+        name: 'parameters',
+        docs: {
+            projectParams: 'projectParams'
+        }
+        },
     everhour: {
         name: 'everhour',
         docs: {

@@ -12,20 +12,21 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-const mailOptions = {
+export const sendMail = (html: string): void => {
+
+  const mailOptions = {
     from: '0129507@gmail.com',
     to: 'andrey1313@ya.ru',
     subject: 'Mail From Node Server',
-    html: '<h2>This is a mail from node server</h2><div>Date: ' + (new Date()).toISOString() + '</div>'
-};
+    html: html,
+  };
 
-export const sendMail = async () => {
 	transporter.sendMail(mailOptions, function (err, info) {
 		const today = new Date();
 		if(err) {
 			db.collection(collections.log.name).doc(collections.log.docs.mail).set({[today.getTime()]: 'mailer error'})
 		} else {
-			db.collection(collections.log.name).doc(collections.log.docs.mail).set({[today.getTime()]: `sent ${info.accepted.join(', ')}`}, {merge: true})
+			db.collection(collections.log.name).doc(collections.log.docs.mail).set({[`${today.toISOString()}`]: `sent ${info.accepted.join(', ')}`}, {merge: true})
 		}
 	})
 }

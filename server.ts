@@ -1,58 +1,98 @@
 import express from "express";
-import { getEverhourAPIData } from "./services/everhourAPIServce";
-import { getTasks, getTasksSchema, getTimeSchema, setEverhourData } from "./services/everhourDBService";
-import { sendMail } from "./services/mailerService";
+import { getTasks, getTasksSchema, getTime, getTimeSchema } from "./services/everhourDBService";
 import { scheduleTask } from "./services/cronService";
+import { everhourDataRefresh } from "./services/refreshService";
+import secret from './tokens/secret'
+import multer from 'multer';
+import cookieSession from 'cookie-session';
+import { getTimeString } from "./helpers/time";
+import { getParametersData, setParametersData } from "./services/parametersDBService";
+import { isLoggedIn } from "./auth/auth";
+import { runMonitoring } from "./services/monitoringService";
+
+const upload = multer() // handle x-form-data middleware
 
 const app = express();
 
 app.set("view engine", "ejs")
 
+app.set('trust proxy', 1) // trust first proxy
+app.use(cookieSession({
+  name: 'session',
+  keys: ['secretKey'],
+  maxAge: 24 * 60 * 60 * 1000 // 24 hours
+}))
+
 // routes
-app.get("/", async (req, res, next) => {
-    try {
+app.get("/", isLoggedIn, async (req, res) => {
+  try {
     const timeSchema = await getTimeSchema();
     const tasksSchema = await getTasksSchema();
     const tasks = await getTasks();
+    const time = await getTime();
+    const currentMonth = `${ new Date().getFullYear() }-${ new Date().getMonth() + 1 }`;
+    const taskData = JSON.parse(tasks.data()?.[currentMonth]);
+    const timeData = JSON.parse(time.data()?.[currentMonth]);
+    let timeTotal = 0;
+    if (timeData) {
+      timeData.forEach((task: any) => timeTotal += task[4]);
+    }
     res.render('home', {
-        schemaTime: JSON.stringify( timeSchema.data()?.schema, null, 2),
-        schemaTasks: JSON.stringify( tasksSchema.data()?.schema, null, 2),
-        tasks: JSON.parse( tasks.data()?.data),
-        dataTime: '',
-        dataTasks: ''
-     })
-    } catch(e) {
+      schemaTime: JSON.stringify(timeSchema.data()?.schema, null, 2),
+      schemaTasks: tasksSchema.data()?.schema ?? [],
+      tasks: taskData,
+      timeTotal: timeTotal > 0 ? getTimeString(timeTotal) : 'ND',
+      dataTime: '',
+      dataTasks: ''
+    })
+  } catch (e) {
+    console.log(e)
+  }
+});
 
+app.get("/login", async (req, res) => {
+  res.render('login')
+});
+
+app.post("/login", upload.none(), async (req, res) => {
+  if (req?.body?.login === secret.token) {
+    if (req.session) {
+      req.session.login = true;
     }
-})
-app.get("/refresh", async (req, res, next) => {
-    
-    const EHRequestParams = {
-        period: ["2023-11-01", "2023-11-30"],
-        users: null,
-        projects: ['as:1198224364498799'],
-        filters: [],
-        propagateSubtasks: false,
-        propagateSubtasksTotals: false,
-        tasksWithEstimate: false,
-        loadParentTasks: true
-    };
+    res.redirect('/')
+    return
+  }
+  res.redirect('/login')
+});
 
-    try {
-        const data = await getEverhourAPIData(EHRequestParams);
-        await setEverhourData(data);
-        res.render("set", {info: 'Updated'})
-    } catch(e) {
-        res.render("set", {info: e})
-    }
+app.get("/logout", isLoggedIn, async (req, res) => {
+  req.session = null
+  res.redirect('/')
+});
+
+app.get('/params', isLoggedIn, async (req, res) => {
+
+  const limitHours = 200;
+  const paramsSet = {
+    fullLimit: limitHours * 3600, // to seconds
+  }
+  await setParametersData(paramsSet);
+
+  // get param
+  const paramsGet = await getParametersData();
+  paramsGet.fullLimitString = getTimeString(paramsGet.fullLimit);
+  res.render('params', {params: JSON.stringify(paramsGet, null,2)});
 })
 
-app.get("/send", (req, res, next) => {
-    sendMail();
-    res.send('ok');
+app.get("/refresh", isLoggedIn, async (req, res) => {
+  await everhourDataRefresh();
+  res.redirect('/');
 })
 
 // scheduled tasks
-scheduleTask('44 * * * * ', sendMail);
+scheduleTask('4 * * * *', everhourDataRefresh);
+scheduleTask('22 * * * *', runMonitoring);
 
-app.listen(1337, () => { console.log("Listening on port 1337") })
+app.listen(1337, () => {
+  console.log("Listening on port 1337")
+})
