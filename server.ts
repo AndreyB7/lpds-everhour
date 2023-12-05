@@ -3,20 +3,18 @@ import { getTasks, getTasksSchema, getTime, getTimeSchema } from "./services/eve
 import { scheduleTask } from "./services/cronService";
 import { everhourDataRefresh } from "./services/refreshService";
 import secret from './tokens/secret'
-import multer from 'multer';
 import cookieSession from 'cookie-session';
 import { getTimeString } from "./helpers/time";
 import { getParametersData, setParametersData } from "./services/parametersDBService";
 import { isLoggedIn } from "./auth/auth";
 import { runMonitoring } from "./services/monitoringService";
-
-const upload = multer() // handle x-form-data middleware
+import { tParameters } from "./types/types";
 
 const app = express();
 
 app.set("view engine", "ejs")
+app.use(express.urlencoded({ extended: false }));
 
-app.set('trust proxy', 1) // trust first proxy
 app.use(cookieSession({
   name: 'session',
   keys: ['secretKey'],
@@ -54,8 +52,8 @@ app.get("/login", async (req, res) => {
   res.render('login')
 });
 
-app.post("/login", upload.none(), async (req, res) => {
-  if (req?.body?.login === secret.token) {
+app.post("/login", async (req, res) => {
+  if (req.body?.login === secret.token) {
     if (req.session) {
       req.session.login = true;
     }
@@ -71,17 +69,19 @@ app.get("/logout", isLoggedIn, async (req, res) => {
 });
 
 app.get('/params', isLoggedIn, async (req, res) => {
+  const params = await getParametersData();
+  params.fullLimitString = getTimeString(params.fullLimit);
+  res.render('params', {params});
+})
 
-  const limitHours = 200;
-  const paramsSet = {
-    fullLimit: limitHours * 3600, // to seconds
+app.post('/params', isLoggedIn, async (req, res) => {
+  const params = await getParametersData();
+  const paramsToUpdate: tParameters = {
+    fullLimit: req.body.fullLimit ? req.body.fullLimit * 3600 : params.fullLimit,
+    emailNotify: req.body.emailNotify.length ? req.body.emailNotify : params.emailNotify,
   }
-  await setParametersData(paramsSet);
-
-  // get param
-  const paramsGet = await getParametersData();
-  paramsGet.fullLimitString = getTimeString(paramsGet.fullLimit);
-  res.render('params', {params: JSON.stringify(paramsGet, null,2)});
+  await setParametersData({...params, ...paramsToUpdate});
+  res.redirect('/params')
 })
 
 app.get("/refresh", isLoggedIn, async (req, res) => {
@@ -90,8 +90,8 @@ app.get("/refresh", isLoggedIn, async (req, res) => {
 })
 
 // scheduled tasks
-scheduleTask('4 * * * *', everhourDataRefresh);
-scheduleTask('22 * * * *', runMonitoring);
+scheduleTask('1 13 */1 * *', everhourDataRefresh);
+scheduleTask('7 13 */1 * *', runMonitoring);
 
 app.listen(1337, () => {
   console.log("Listening on port 1337")

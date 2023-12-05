@@ -1,4 +1,28 @@
 <%- include('parts/nav'); %>
+<style>
+    form {
+        padding: 10px;
+    }
+    label {
+        display: block;
+        margin-bottom: 10px;
+    }
+    input {
+        display: block;
+        margin-top: 5px;
+        width: 200px;
+    }
+</style>
 <div>
-    <pre><%= params %></pre>
+    <form method="post" action="/params">
+        <label>
+            Project time limit in hours:
+            <input type="number" name="fullLimit" placeholder="<%= params.fullLimit/3600 %>">
+        </label>
+        <label>
+            Notification Emails:
+            <input type="text" name="emailNotify" placeholder="<%= params.emailNotify %>">
+        </label>
+        <button type="submit">Update</button>
+    </form>
 </div>

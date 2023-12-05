@@ -2,6 +2,8 @@ import { sendMail } from "./mailerService";
 import { getTime } from "./everhourDBService";
 import { getParametersData } from "./parametersDBService";
 import { getTimeString } from "../helpers/time";
+import ejs from 'ejs';
+import path from "path";
 
 export const runMonitoring = async () => {
   const parameters = await getParametersData();
@@ -11,12 +13,19 @@ export const runMonitoring = async () => {
   if (timeData) {
     timeData.forEach((task: any) => timeTotal += task[4]);
   }
-  sendMail('<h2>Everhour task report</h2>' +
-    '<div>Project: ' + 'COA' + '</div>' +
-    '<div>Tasks Time: ' + getTimeString(timeTotal) + '</div>' +
-    '<div>Time Limit: ' + getTimeString(parameters.fullLimit) + '</div>' +
-    '<div>Persent: ' + (timeTotal/parameters.fullLimit)*100 + '%' + '</div>' +
-    '<hr>' +
-    '<div>Date: ' + (new Date()).toISOString() + '</div>' +
-    '');
+
+  const data = {
+    timeTotal: getTimeString(timeTotal),
+    fullLimit: getTimeString(parameters.fullLimit),
+    percent: (timeTotal/parameters.fullLimit*100).toFixed(1) + '%',
+    time: (new Date()).toLocaleString(),
+  }
+
+  ejs.renderFile(path.join(__dirname, "../views/email.ejs"), data, {}, function(err, html){
+    if (err) {
+      console.log(err)
+      return
+    }
+    sendMail(parameters.emailNotify,html);
+  });
 }

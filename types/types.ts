@@ -22,5 +22,6 @@ export type EverhourRequestOptions = {
 
 export type tParameters = {
     fullLimit: number;
+    emailNotify: string;
     fullLimitString?: string;
 }
