@@ -5,6 +5,8 @@ import { getTimeString } from "../helpers/time";
 import ejs from 'ejs';
 import path from "path";
 import { slackMessage } from "./slackNotifierService";
+import db from "../db/db";
+import collections from "../db/collections";
 
 export const runMonitoring = async () => {
   const parameters = await getParametersData();
@@ -18,16 +20,18 @@ export const runMonitoring = async () => {
   const data = {
     timeTotal: getTimeString(timeTotal),
     fullLimit: getTimeString(parameters.fullLimit),
-    percent: (timeTotal/parameters.fullLimit*100).toFixed(1) + '%',
+    percent: (timeTotal / parameters.fullLimit * 100).toFixed(1) + '%',
     time: (new Date()).toLocaleString(),
   }
 
-  ejs.renderFile(path.join(__dirname, "../views/email.ejs"), data, {}, function(err, html){
+  ejs.renderFile(path.join(__dirname, "../views/email.ejs"), data, {}, function (err, html) {
     if (err) {
-      console.log(err)
+      db.collection(collections.log.name)
+        .doc(collections.log.docs.error)
+        .set({ [(new Date()).toISOString()]: `ejs html render error: ${ err?.message }` })
       return
     }
-    sendMail(parameters.emailNotify,html);
-    slackMessage(`COA time limit usage: ${data.percent}`);
+    sendMail(parameters.emailNotify, html);
+    slackMessage(`COA time limit usage: ${ data.percent }`);
   });
 }
