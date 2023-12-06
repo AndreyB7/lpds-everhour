@@ -4,6 +4,7 @@ import { getParametersData } from "./parametersDBService";
 import { getTimeString } from "../helpers/time";
 import ejs from 'ejs';
 import path from "path";
+import { slackMessage } from "./slackNotifierService";
 
 export const runMonitoring = async () => {
   const parameters = await getParametersData();
@@ -27,5 +28,6 @@ export const runMonitoring = async () => {
       return
     }
     sendMail(parameters.emailNotify,html);
+    slackMessage(`COA time limit usage: ${data.percent}`);
   });
 }
