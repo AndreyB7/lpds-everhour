@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "dev": "nodemon server.ts",
-    "build": "npx tsc & cp -r views build/views",
+    "build": "npx tsc && cp -r views build/views",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
