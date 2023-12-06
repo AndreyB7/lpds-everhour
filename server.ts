@@ -91,7 +91,7 @@ app.get("/refresh", isLoggedIn, async (req, res) => {
 
 // scheduled tasks
 scheduleTask('1 13 * * *', everhourDataRefresh);
-scheduleTask('40 4 * * *', runMonitoring);
+scheduleTask('7 13 * * *', runMonitoring);
 
 app.listen(1337, () => {
   console.log("Listening on port 1337")
