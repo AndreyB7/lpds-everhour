@@ -32,6 +32,6 @@ export const runMonitoring = async () => {
       return
     }
     sendMail(parameters.emailNotify, html);
-    slackMessage(`COA time limit usage: ${ data.percent }`);
+    slackMessage(`COA time limit usage: ${ data.percent } (${data.timeTotal} from ${data.fullLimit})`);
   });
 }
