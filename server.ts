@@ -1,14 +1,17 @@
 import express from "express";
-import { getTasks, getTasksSchema, getTime, getTimeSchema } from "./services/everhourDBService";
+import { getEHData, getTasksSchema, getTimeSchema } from "./db/everhourDB";
 import { scheduleTask } from "./services/cronService";
 import { everhourDataRefresh } from "./services/refreshService";
 import secret from './tokens/secret'
 import cookieSession from 'cookie-session';
 import { getTimeString } from "./helpers/time";
-import { getParametersData, setParametersData } from "./services/parametersDBService";
+import {
+  getProjectsParams,
+  setProjectParams
+} from "./db/parametersDB";
 import { isLoggedIn } from "./auth/auth";
 import { runMonitoring } from "./services/monitoringService";
-import { tParameters } from "./types/types";
+import { tProject } from "./types/types";
 
 const app = express();
 
@@ -24,13 +27,13 @@ app.use(cookieSession({
 // routes
 app.get("/", isLoggedIn, async (req, res) => {
   try {
+    // const projectsParams = await getProjectsParams();
     const timeSchema = await getTimeSchema();
     const tasksSchema = await getTasksSchema();
-    const tasks = await getTasks();
-    const time = await getTime();
+    const projectData = (await getEHData('SVT')).data()
     const currentMonth = `${ new Date().getFullYear() }-${ new Date().getMonth() + 1 }`;
-    const taskData = JSON.parse(tasks.data()?.[currentMonth]);
-    const timeData = JSON.parse(time.data()?.[currentMonth]);
+    const taskData = JSON.parse(projectData?.tasks[currentMonth]);
+    const timeData = JSON.parse(projectData?.time[currentMonth]);
     let timeTotal = 0;
     if (timeData) {
       timeData.forEach((task: any) => timeTotal += task[4]);
@@ -69,29 +72,44 @@ app.get("/logout", isLoggedIn, async (req, res) => {
 });
 
 app.get('/params', isLoggedIn, async (req, res) => {
-  const params = await getParametersData();
-  params.fullLimitString = getTimeString(params.fullLimit);
-  res.render('params', {params});
+  const projectsParams = await getProjectsParams();
+  // convert seconds to hours
+  Object.keys(projectsParams).forEach(key => {
+    projectsParams[key] = { ...projectsParams[key], fullLimit: projectsParams[key].fullLimit / 3600 }
+  })
+  res.render('params', { data: projectsParams });
 })
 
 app.post('/params', isLoggedIn, async (req, res) => {
-  const params = await getParametersData();
-  const paramsToUpdate: tParameters = {
-    fullLimit: req.body.fullLimit ? req.body.fullLimit * 3600 : params.fullLimit,
-    emailNotify: req.body.emailNotify.length ? req.body.emailNotify : params.emailNotify,
+  const paramsToUpdate: tProject = {
+    shortName: req.body.shortName,
+    everhourId: req.body.everhourId,
+    fullLimit: req.body.fullLimit * 3600,
+    emailNotify: req.body.emailNotify,
+    slackChatWebHook: req.body.slackChatWebHook,
   }
-  await setParametersData({...params, ...paramsToUpdate});
+  try {
+    await setProjectParams(paramsToUpdate.shortName, paramsToUpdate);
+  } catch (e) {
+    console.log(e);
+  }
   res.redirect('/params')
 })
 
 app.get("/refresh", isLoggedIn, async (req, res) => {
-  await everhourDataRefresh();
-  res.redirect('/');
+  everhourDataRefresh()
+    .then(() => res.redirect('/'))
+    .catch((e) => {
+        res.render('error', { message: e.message });
+      }
+    );
 })
 
 // scheduled tasks
-scheduleTask('1 13 * * *', everhourDataRefresh);
-scheduleTask('7 13 * * *', runMonitoring);
+if (process.env.NODE_ENV !== 'dev') {
+  scheduleTask('1 13 * * 1-5', everhourDataRefresh)
+  scheduleTask('7 13 * * 1-5', runMonitoring)
+}
 
 app.listen(1337, () => {
   console.log("Listening on port 1337")

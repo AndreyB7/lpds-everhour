@@ -2,7 +2,7 @@ const collections = {
     parameters: {
         name: 'parameters',
         docs: {
-            projectParams: 'projectParams'
+            params: 'params'
         }
         },
     everhour: {

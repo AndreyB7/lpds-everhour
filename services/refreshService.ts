@@ -1,6 +1,8 @@
-import { getEverhourAPIData } from "./everhourAPIServce";
-import { setEverhourData } from "./everhourDBService";
+import { getEverhourAPIData } from "../api/everhourAPI";
+import { setProjectEverhourData } from "../db/everhourDB";
+import { getProjectsParams } from "../db/parametersDB";
 
+// defaults
 const EHRequestParams = {
   period: ["2023-11-01", "2023-11-30"],
   users: null,
@@ -13,22 +15,30 @@ const EHRequestParams = {
 };
 export const everhourDataRefresh = async () => {
 
-  const date = new Date();
-  const y = date.getFullYear();
-  const m = date.getMonth();
-  const firstDay = new Date(y, m, 1);
-  const lastDay = new Date(y, m + 1, 0);
+  const date = new Date()
+  const y = date.getFullYear()
+  const m = date.getMonth()
+  const firstDay = new Date(y, m, 1)
+  const lastDay = new Date(y, m + 1, 0)
 
   EHRequestParams.period = [
     `${ firstDay.getFullYear() }-${ firstDay.getMonth() + 1 }-0${ firstDay.getDate() }`,
     `${ lastDay.getFullYear() }-${ lastDay.getMonth() + 1 }-${ lastDay.getDate() }`
   ];
 
-  const data = await getEverhourAPIData(EHRequestParams);
+  const projects = await getProjectsParams()
 
-  if (data) {
-    const key = `${ firstDay.getFullYear() }-${ firstDay.getMonth() + 1 }`;
-    await setEverhourData(key,data);
+  const timeKey = `${ firstDay.getFullYear() }-${ firstDay.getMonth() + 1 }`
+
+  const refreshProject = async (projectShortName: string) => {
+    EHRequestParams.projects = [projects[projectShortName].everhourId]
+    const data = await getEverhourAPIData(EHRequestParams)
+    if (data) {
+      await setProjectEverhourData(projectShortName, timeKey, data)
+    }
   }
 
+  await Promise.all(
+    Object.keys(projects).map(projectShortName => refreshProject(projectShortName))
+  )
 }

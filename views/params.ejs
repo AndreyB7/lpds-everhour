@@ -3,26 +3,67 @@
     form {
         padding: 10px;
     }
+
     label {
         display: block;
         margin-bottom: 10px;
     }
+
     input {
         display: block;
         margin-top: 5px;
-        width: 200px;
+        width: 300px;
     }
 </style>
+<div class="projects-nav" style="padding: 10px">
+    <button data-project="">Add New</button>
+    <% Object.keys(data).forEach(function(key) { %>
+        <button data-project="<%= data[key].shortName %>"><%= data[key].shortName %></button>
+    <% }); %>
+</div>
 <div>
     <form method="post" action="/params">
         <label>
+            Project Short Name:
+            <input type="text" name="shortName">
+        </label>
+        <label>
+            Project Everhour ID:
+            <input type="text" name="everhourId">
+        </label>
+        <label>
             Project time limit in hours:
-            <input type="number" name="fullLimit" placeholder="<%= params.fullLimit/3600 %>">
+            <input type="number" name="fullLimit">
         </label>
         <label>
             Notification Emails:
-            <input type="text" name="emailNotify" placeholder="<%= params.emailNotify %>">
+            <input type="text" name="emailNotify">
+        </label>
+        <label>
+            Slack WebHook URL:
+            <input type="text" name="slackChatWebHook">
         </label>
         <button type="submit">Update</button>
     </form>
 </div>
+<script>
+  const data = JSON.parse('<%- JSON.stringify(data) %>');
+  const projectsNav = document.querySelectorAll('.projects-nav button');
+  const form = document.querySelectorAll('form input');
+  const renderFormData = () => {
+    form.forEach(input => {
+      input.value = 'projectShortName'
+      input.value = project[input.name] ?? ''
+
+      input.disabled = !!( project.shortName && input.name === 'shortName' );
+    })
+  }
+
+  let project = data[Object.keys(data)[0]];
+  renderFormData();
+
+  projectsNav.forEach(btn => btn.addEventListener('click', (e) => {
+    project = e.target.dataset.project ? data[e.target.dataset.project] : {};
+    renderFormData();
+  }));
+</script>
