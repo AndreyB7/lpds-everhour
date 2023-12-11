@@ -14,6 +14,9 @@
         margin-top: 5px;
         width: 300px;
     }
+    input:read-only {
+        cursor: not-allowed;
+    }
 </style>
 <div class="projects-nav" style="padding: 10px">
     <button data-project="">Add New</button>
@@ -52,10 +55,8 @@
   const form = document.querySelectorAll('form input');
   const renderFormData = () => {
     form.forEach(input => {
-      input.value = 'projectShortName'
       input.value = project[input.name] ?? ''
-
-      input.disabled = !!( project.shortName && input.name === 'shortName' );
+      input.readOnly = !!( project.shortName && input.name === 'shortName' );
     })
   }
 

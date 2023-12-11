@@ -107,8 +107,8 @@ app.get("/refresh", isLoggedIn, async (req, res) => {
 
 // scheduled tasks
 if (process.env.NODE_ENV !== 'dev') {
-  scheduleTask('1 14 * * 1-5', everhourDataRefresh)
-  scheduleTask('7 14 * * 1-5', runMonitoring)
+  scheduleTask('11 14 * * 1-5', everhourDataRefresh)
+  scheduleTask('17 14 * * 1-5', runMonitoring)
 }
 
 app.listen(1337, () => {
