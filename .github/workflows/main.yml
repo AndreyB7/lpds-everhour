@@ -20,9 +20,15 @@ jobs:
     deploy:
       runs-on: ubuntu-latest
       steps:
-      - uses: 'google-github-actions/ssh-compute@v1'
-        with:
-          instance_name: 'instance-2'
-          zone: 'us-central1-a'
-          ssh_private_key: '${{ secrets.GCP_SSH_PRIVATE_KEY }}'
-          command: 'echo Hello world'
+        - uses: 'actions/checkout@v4'
+        - id: 'auth'
+          uses: 'google-github-actions/auth@v2'
+          with:
+            workload_identity_provider: 'projects/864572051424/locations/global/workloadIdentityPools/github/providers/saml-lpds'
+            service_account: '864572051424-compute@developer.gserviceaccount.com'
+        - uses: 'google-github-actions/ssh-compute@v1'
+          with:
+            instance_name: 'instance-2'
+            zone: 'us-central1-a'
+            ssh_private_key: '${{ secrets.GCP_SSH_PRIVATE_KEY }}'
+            command: 'echo Hello world'
