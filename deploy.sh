@@ -1,0 +1,2 @@
+echo 'Deploy Start'
+ls
