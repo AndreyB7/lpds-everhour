@@ -8,7 +8,7 @@ import { sendMail } from "./mailerService";
 import { slackMessage } from "./slackNotifierService";
 import { getEHData } from "../db/everhourDB";
 
-export const runProjectMonitoring = async (projectParams: tProject):Promise<tMonitoring> => {
+export const runProjectMonitoring = async (projectParams: tProject): Promise<tMonitoring> => {
   const currentMonth = `${ new Date().getFullYear() }-${ new Date().getMonth() + 1 }`
   const timeData = JSON.parse((await getEHData(projectParams.shortName)).data()?.time[currentMonth])
   let timeTotal = 0
@@ -35,11 +35,11 @@ export const runMonitoring = async () => {
     Object.keys(monitoringData).map(
       async (projectShortName) => {
         const html = ejs.render(template, monitoringData[projectShortName])
-        sendMail('0129507@gmail.com', html)
+        sendMail(projectsParams[projectShortName].emailNotify, `Daily ${ projectShortName } Report`, html)
         const projectData = monitoringData[projectShortName]
         await slackMessage(
           projectsParams[projectShortName].slackChatWebHook,
-          `${projectShortName} time limit usage: ${ projectData.percent } (${ projectData.timeTotal } from ${ projectData.fullLimit })`
+          `${ projectShortName } time limit usage: ${ projectData.percent } (${ projectData.timeTotal } from ${ projectData.fullLimit })`
         )
       })
   ).catch(e => {

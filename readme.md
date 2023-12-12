@@ -86,9 +86,16 @@ Upload tokens folder to project root:
 
 
 ## Production with PM2
-
 ```sudo npm install pm2 -g```
+
 ```pm2 install typescript```
 
 ```npx tsc```
+
 ```pm2 start build/server.ts```
+
+## Github Actions comments
+Create JSON key for service account, add to github secrets.
+Create SSH key for cloud project in Compute Engine -> Metadata, add private-ssh-key to github secrets.
+Add permissions to google service account: ```IAP-secured Tunnel User```
+

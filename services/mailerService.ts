@@ -12,12 +12,12 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-export const sendMail = (to: string, html: string): void => {
+export const sendMail = (to: string, subject:string, html: string): void => {
 
   const mailOptions = {
     from: 'hello@lorenpolster.com',
     to: to,
-    subject: 'Daily COA Report',
+    subject: subject,
     html: html,
   };
 
