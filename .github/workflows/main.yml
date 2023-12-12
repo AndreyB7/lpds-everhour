@@ -30,7 +30,7 @@ jobs:
           instance_name: 'instance-2'
           zone: 'us-central1-a'
           ssh_private_key: '${{ secrets.GCP_SSH_PRIVATE_KEY }}'
-          command: 'echo Hello world && ls'
+          script: '${{ github.workspace }}/deploy.sh'
 
       - id: 'test'
         run: |-
