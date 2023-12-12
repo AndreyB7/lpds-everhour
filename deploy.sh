@@ -1,2 +1,2 @@
 echo 'Deploy Start'
-ls
+echo "$PWD"
