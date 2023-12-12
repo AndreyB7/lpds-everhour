@@ -1,2 +1,4 @@
 echo 'Deploy Start'
-echo "$PWD"
+pm2 list
+sudo su
+pm2 list
