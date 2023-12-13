@@ -20,7 +20,7 @@ export const runProjectMonitoring = async (projectParams: tProject): Promise<tMo
     timeTotal: getTimeString(timeTotal),
     fullLimit: getTimeString(projectParams.fullLimit),
     percent: (timeTotal / projectParams.fullLimit * 100).toFixed(1) + '%',
-    time: (new Date()).toLocaleString(),
+    time: (new Date()).toString(),
   }
 }
 
