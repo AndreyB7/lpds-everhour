@@ -36,7 +36,7 @@ export const runMonitoring = async () => {
   Promise.all(
     Object.keys(monitoringData).map(
       async (projectShortName) => {
-        const html = ejs.render(template, monitoringData[projectShortName])
+        const html = ejs.render(template, {projectShortName, ...monitoringData[projectShortName]})
         sendMail(projectsParams[projectShortName].emailNotify, `Daily ${ projectShortName } Report`, html)
         const projectData = monitoringData[projectShortName]
         await slackMessage(
