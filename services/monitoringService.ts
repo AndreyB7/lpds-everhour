@@ -20,7 +20,7 @@ export const runProjectMonitoring = async (projectParams: tProject): Promise<tMo
     timeTotal: getTimeString(timeTotal),
     fullLimit: getTimeString(projectParams.fullLimit),
     percent: (timeTotal / projectParams.fullLimit * 100).toFixed(1) + '%',
-    time: (new Date()).toLocaleString(),
+    time: (new Date()).toString(),
   }
 }
 
@@ -38,7 +38,7 @@ export const runMonitoring = async () => {
         sendMail(projectsParams[projectShortName].emailNotify, `Daily ${ projectShortName } Report`, html)
         const projectData = monitoringData[projectShortName]
         await slackMessage(
-          projectsParams[projectShortName].slackChatWebHook,
+          process.env.NODE_ENV == 'dev' ? process.env.DEV_SLACK as string : projectsParams[projectShortName].slackChatWebHook,
           `${ projectShortName } time limit usage: ${ projectData.percent } (${ projectData.timeTotal } from ${ projectData.fullLimit })`
         )
       })
