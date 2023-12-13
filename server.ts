@@ -1,3 +1,5 @@
+import dotenv from 'dotenv';
+dotenv.config();
 import express from "express";
 import { getEHData, getTasksSchema, getTimeSchema } from "./db/everhourDB";
 import { scheduleTask } from "./services/cronService";
