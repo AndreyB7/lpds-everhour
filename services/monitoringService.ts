@@ -42,7 +42,7 @@ export const runMonitoring = async () => {
         await slackMessage(
           projectsParams[projectShortName].slackChatWebHook,
           `${ projectShortName } time limit usage: ${ projectData.percent } (${ projectData.timeTotal } from ${ projectData.fullLimit })` +
-          `\n${ workingDays.ahead.length } working days from ${ workingDays.total.length } ahead.` +
+          `\n${ workingDays.ahead.length } from ${ workingDays.total.length } working days ahead.` +
           `\nPassed ${ (workingDays.passed.length / workingDays.total.length * 100).toFixed(1) }% of month.`
         )
       })

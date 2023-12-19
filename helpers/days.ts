@@ -4,7 +4,7 @@ export const getWorkingDays = () => {
   const month = currentDate.getMonth()
   const daysInMonth = new Date(year, month + 1, 0).getDate()
   // holidays by month
-  const holidays = [[1,15], [19], [], [], [27], [19], [4], [], [2], [14], [11,28,29], [25]]
+  const holidays = getHolidays();
 
   const total = []
   const ahead = []
@@ -26,4 +26,8 @@ export const getWorkingDays = () => {
   }
 
   return { total, ahead, passed }
+}
+
+export const getHolidays = () => {
+  return [[1,15], [19], [], [], [27], [19], [4], [], [2], [14], [11,28,29], [22,25,26,27,28,29]];
 }
