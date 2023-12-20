@@ -107,6 +107,45 @@ app.get("/refresh", isLoggedIn, async (req, res) => {
     );
 })
 
+// API
+app.get('/api/parameters', async (req, res) => {
+  const projectsParams = await getProjectsParams();
+  // convert seconds to hours
+  Object.keys(projectsParams).forEach(key => {
+    projectsParams[key] = { ...projectsParams[key], fullLimit: projectsParams[key].fullLimit / 3600 }
+  })
+  res.send({ projectsParams });
+})
+
+app.get("/api/:slug", async (req, res) => {
+  try {
+    // const projectsParams = await getProjectsParams();
+    const currentMonth = `${ new Date().getFullYear() }-${ new Date().getMonth() + 1 }`
+
+    const timeSchema = await getTimeSchema()
+    const tasksSchema = await getTasksSchema()
+    const projectData = await getEHData(req.params.slug.toUpperCase())
+    if (!projectData || !projectData.tasks) {
+      res.status(400).send({error: 'not found projectData'})
+      throw new Error('no projectData found')
+    }
+    const taskData = JSON.parse(projectData.tasks[currentMonth])
+    const timeData = JSON.parse(projectData.time[currentMonth])
+    let timeTotal = 0
+    if (timeData) {
+      timeData.forEach((task: any) => timeTotal += task[4])
+    }
+    res.send({
+      schemaTime: timeSchema.data()?.schema ?? [],
+      schemaTasks: tasksSchema.data()?.schema ?? [],
+      timeTotal: timeTotal > 0 ? getTimeString(timeTotal) : 'ND',
+      tasks: taskData,
+    })
+  } catch (e) {
+    console.log(e)
+  }
+});
+
 // scheduled tasks
 if (process.env.NODE_ENV !== 'dev') {
   scheduleTask('11 14 * * 1-5', everhourDataRefresh)
