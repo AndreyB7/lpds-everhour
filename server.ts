@@ -1,5 +1,4 @@
-import dotenv from 'dotenv';
-dotenv.config();
+import 'dotenv/config'
 import express from "express";
 import { getEHData, getTasksSchema, getTimeSchema } from "./db/everhourDB";
 import { scheduleTask } from "./services/cronService";
@@ -30,15 +29,15 @@ app.use(cookieSession({
 app.get("/", isLoggedIn, async (req, res) => {
   try {
     // const projectsParams = await getProjectsParams();
-    const timeSchema = await getTimeSchema();
-    const tasksSchema = await getTasksSchema();
-    const projectData = (await getEHData('SVT')).data()
-    const currentMonth = `${ new Date().getFullYear() }-${ new Date().getMonth() + 1 }`;
-    const taskData = JSON.parse(projectData?.tasks[currentMonth]);
-    const timeData = JSON.parse(projectData?.time[currentMonth]);
-    let timeTotal = 0;
+    const timeSchema = await getTimeSchema()
+    const tasksSchema = await getTasksSchema()
+    const projectData = await getEHData('SVT')
+    const currentMonth = `${ new Date().getFullYear() }-${ new Date().getMonth() + 1 }`
+    const taskData = JSON.parse(projectData.tasks[currentMonth])
+    const timeData = JSON.parse(projectData.time[currentMonth])
+    let timeTotal = 0
     if (timeData) {
-      timeData.forEach((task: any) => timeTotal += task[4]);
+      timeData.forEach((task: any) => timeTotal += task[4])
     }
     res.render('home', {
       schemaTime: JSON.stringify(timeSchema.data()?.schema, null, 2),
@@ -146,11 +145,14 @@ app.get("/api/:slug", async (req, res) => {
   }
 });
 
+app.get("/monitoring", isLoggedIn, async (req, res) => {
+  await runMonitoring()
+  res.send(`run ${new Date().toString()}`)
+})
+
 // scheduled tasks
-if (process.env.NODE_ENV !== 'dev') {
-  scheduleTask('11 14 * * 1-5', everhourDataRefresh)
-  scheduleTask('17 14 * * 1-5', runMonitoring)
-}
+scheduleTask('11 13 * * 1-5', everhourDataRefresh)
+scheduleTask('17 13 * * 1-5', runMonitoring)
 
 app.listen(1337, () => {
   console.log("Listening on port 1337")

@@ -1,10 +1,11 @@
 //Firestore DB
-import fs from 'firebase-admin'
+import { initializeApp, cert } from "firebase-admin/app";
+import { getFirestore } from 'firebase-admin/firestore';
 import serviceAccount from '../tokens/firestore'
 
-fs.initializeApp({
-    credential: fs.credential.cert(serviceAccount)
+const firebaseApp = initializeApp({
+    credential: cert(serviceAccount),
 });
 
-const db = fs.firestore()
+const db = getFirestore(firebaseApp, process.env.NODE_ENV == 'dev' ? 'lpds-dev' : '(default)')
 export default db

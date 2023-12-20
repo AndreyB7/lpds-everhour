@@ -1,6 +1,6 @@
 import db from "../db/db";
 import collections from '../db/collections';
-import { EverhourData } from "../types/types";
+import { EverhourData, EverhourProjectData } from "../types/types";
 
 const everhourLog = db.collection(collections.log.name);
 const everhourDb = db.collection(collections.everhour.name);
@@ -51,5 +51,5 @@ export const getTasksSchema = async () => {
 }
 
 export const getEHData = async (projectShortName: string) => {
-  return await everhourDb.doc(projectShortName).get();
+  return (await everhourDb.doc(projectShortName).get()).data() as EverhourProjectData;
 }
