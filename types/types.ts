@@ -9,6 +9,15 @@ export type EverhourData = {
   }
 }
 
+export type EverhourProjectData = {
+  time: {
+    [key:string]:string
+  }
+  tasks: {
+    [key:string]:string
+  }
+}
+
 export type EverhourRequestOptions = {
   period: string[];
   users: null;
