@@ -3,13 +3,9 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "dev:server": "nodemon server.ts --ignore frontend",
-    "build:server": "npx tsc && cp -r views build/views",
-    "start:server": "node build/server.js",
-    "dev:front": "cd frontend && npm run dev",
-    "build:front": "cd frontend && npm run build && cd ..",
-    "start:front": "cd frontend && npm run start && cd ..",
-    "dev": "npm run dev:server & npm run dev:front",
+    "dev": "nodemon server.ts --ignore frontend",
+    "build": "npx tsc && cp -r views build/views",
+    "start": "node build/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
