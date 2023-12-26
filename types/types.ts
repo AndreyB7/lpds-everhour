@@ -11,10 +11,10 @@ export type EverhourData = {
 
 export type EverhourProjectData = {
   time: {
-    [key:string]:string
+    [key: string]: string
   }
   tasks: {
-    [key:string]:string
+    [key: string]: string
   }
 }
 
@@ -37,11 +37,19 @@ export type tProject = {
   slackChatWebHook: string;
 }
 
+export type projectFormState = {
+  message: string,
+  errors?: {
+    [K in keyof tProject]?: string[]
+  }
+}
+
 export type tParameters = {
-  projects: {[key: string]: tProject}
+  projects: { [key: string]: tProject }
 }
 
 export type tMonitoring = {
+  shortName: string;
   timeTotal: string;
   fullLimit: string;
   percent: string;

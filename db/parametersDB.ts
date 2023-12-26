@@ -3,7 +3,7 @@ import collections from "../db/collections";
 import { tParameters, tProject } from "../types/types";
 
 let parameters: tParameters | null = null;
-let projectParameters: {[key:string]: tProject } | null = null;
+let projectParameters: tProject[] | null = null;
 const paramsDb = db.collection(collections.parameters.name)
 
 export const setParametersData = async (params: tParameters) => {
@@ -23,16 +23,16 @@ export const setProjectParams = async (projectName: string, params: tProject) =>
   projectParameters = null // reset cashed parameters
 }
 
-export const getProjectsParams = async () => {
+export const getProjectsParams = async (): Promise<tProject[]> => {
   if (projectParameters) {
     return projectParameters;
   }
   const snapshot = await paramsDb.get()
-  const projectsParams: {[key:string]: tProject } = {};
+  const projectsParams: tProject[] = [];
   snapshot.forEach(doc => {
     const data = doc.data() as tProject;
     if (data.shortName) {
-      projectsParams[data.shortName] = data;
+      projectsParams.push(data);
     }
   })
   return projectsParams;

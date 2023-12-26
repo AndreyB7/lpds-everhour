@@ -6,9 +6,11 @@ export const getWorkingDays = () => {
   // holidays by month
   const holidays = getHolidays();
 
+  const isWorkingDay = !holidays[month].includes(currentDate.getDate())
   const total = []
   const ahead = []
   const passed = []
+
   for (let i = 1; i <= daysInMonth; i++) {
     const date = new Date(year, month, i)
     if (holidays[month].includes(date.getDate())) {
@@ -25,7 +27,7 @@ export const getWorkingDays = () => {
     }
   }
 
-  return { total, ahead, passed }
+  return { total, ahead, passed, isWorkingDay }
 }
 
 export const getHolidays = () => {

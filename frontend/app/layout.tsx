@@ -1,22 +1,25 @@
-import { Theme } from "@radix-ui/themes";
-import { Inter } from "next/font/google";
+import { Roboto } from "next/font/google";
 import '@radix-ui/themes/styles.css';
+import './global.css';
+import { Providers } from "@/components/Providers";
+import { getServerSession } from "next-auth";
+import Nav from "@/navigation/Nav";
 
-const inter = Inter({ subsets: ['latin'] })
+const inter = Roboto({ weight: ['400'], subsets: ['latin'] })
 
-export default function RootLayout({
+export default async function RootLayout({
                                      children,
                                    }: {
   children: React.ReactNode
 }) {
+  const session = await getServerSession()
   return (
     <html lang="en">
-    <body className={ inter.className }>
-    <Theme
-      //appearance="dark"
-      radius="small">
+    <body className={ inter.className + ' theme-custom' }>
+    <Providers>
+      <Nav session={session}/>
       { children }
-    </Theme>
+    </Providers>
     </body>
     </html>
   )

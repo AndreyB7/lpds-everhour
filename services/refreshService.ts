@@ -1,6 +1,7 @@
 import { getEverhourAPIData } from "../api/everhourAPI";
 import { setProjectEverhourData } from "../db/everhourDB";
 import { getProjectsParams } from "../db/parametersDB";
+import { tProject } from "../types/types";
 
 // defaults
 const EHRequestParams = {
@@ -30,15 +31,16 @@ export const everhourDataRefresh = async () => {
 
   const timeKey = `${ firstDay.getFullYear() }-${ firstDay.getMonth() + 1 }`
 
-  const refreshProject = async (projectShortName: string) => {
-    EHRequestParams.projects = [projects[projectShortName].everhourId]
+  const refreshProject = async (project: tProject) => {
+    if (!project) return
+    EHRequestParams.projects = [project.everhourId]
     const data = await getEverhourAPIData(EHRequestParams)
     if (data) {
-      await setProjectEverhourData(projectShortName, timeKey, data)
+      await setProjectEverhourData(project.shortName, timeKey, data)
     }
   }
 
   await Promise.all(
-    Object.keys(projects).map(projectShortName => refreshProject(projectShortName))
+    projects.map(p => refreshProject(p))
   )
 }

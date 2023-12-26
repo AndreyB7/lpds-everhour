@@ -1,12 +1,13 @@
-import { Text, Flex, Container } from "@radix-ui/themes";
-import Nav from "@/app/nav";
+import { Container, Flex, Text } from "@radix-ui/themes";
+import { tProject } from "../../../types/types";
+import ProjectOptionsForm from "@/app/parameters/ProjectOptionsForm";
 
 export const metadata = {
   title: 'Parameters',
   description: 'Parameters Desc',
 }
 
-async function getData() {
+async function getData(): Promise<tProject[]> {
   const res = await fetch('http://localhost:1337/api/parameters', { next: { revalidate: 120 } })
 
   if (!res.ok) {
@@ -18,18 +19,11 @@ async function getData() {
 }
 
 export default async function Parameters() {
-  const data = await getData()
+  const projects = await getData()
+
   return (
-    <Container>
-      <Nav/>
-      <Flex gap="2" align="center" direction="column">
-        <Text>Parameters</Text>
-      </Flex>
-      <Text>
-        <pre>
-          { JSON.stringify(data,null,2) }
-          </pre>
-      </Text>
+    <Container size={ "2" }>
+      {projects.length ? <ProjectOptionsForm projects={ projects }/> : <Flex justify={"center"}>No Data Loaded...</Flex>}
     </Container>
   )
 }
