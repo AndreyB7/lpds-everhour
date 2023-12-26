@@ -19,7 +19,7 @@ app.use(express.json());
 // routes
 app.get("/api/refresh", async (req, res) => {
   everhourDataRefresh()
-    .then(() => res.send({status: 'ok'}))
+    .then(() => res.send({ status: `refresh run ok: ${ new Date().toString() }` }))
     .catch((e) => {
         res.send({ error: 'Refresh error', message: e.message });
       }
@@ -36,7 +36,7 @@ app.get('/api/parameters', async (req, res) => {
   res.send(result);
 })
 
-app.post('/api/parameters',async (req, res) => {
+app.post('/api/parameters', async (req, res) => {
   const paramsToUpdate: tProject = {
     shortName: req.body.shortName,
     everhourId: req.body.everhourId,
@@ -54,6 +54,12 @@ app.post('/api/parameters',async (req, res) => {
   }
 })
 
+app.get("/api/monitoring", async (req, res) => {
+  await runMonitoring()
+  res.send({ status: `monitoring run ok: ${ new Date().toString() }` })
+})
+
+// deprecated
 app.get("/api/:slug", async (req, res) => {
   try {
     // const projectsParams = await getProjectsParams();
@@ -63,7 +69,7 @@ app.get("/api/:slug", async (req, res) => {
     const tasksSchema = await getTasksSchema()
     const projectData = await getEHData(req.params.slug.toUpperCase())
     if (!projectData || !projectData.tasks) {
-      res.status(400).send({error: 'not found projectData'})
+      res.status(400).send({ error: 'not found projectData' })
     }
     const taskData = JSON.parse(projectData.tasks[currentMonth])
     const timeData = JSON.parse(projectData.time[currentMonth])
@@ -81,11 +87,6 @@ app.get("/api/:slug", async (req, res) => {
     console.log(e)
   }
 });
-
-app.get("/api/monitoring", async (req, res) => {
-  await runMonitoring()
-  res.send(`run ${new Date().toString()}`)
-})
 
 // scheduled tasks
 scheduleTask('17 13 * * 1-5', scheduledMonitoring)
