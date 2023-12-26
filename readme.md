@@ -3,6 +3,7 @@
 ## Install Nginx:
 
 ```sudo apt update```
+
 ```sudo apt install nginx -y```
 
 ## Install Git:
@@ -12,8 +13,11 @@
 ## Install Node:
 
 ```sudo apt-get update```
+
 ```sudo apt-get install -y ca-certificates curl gnupg```
+
 ```sudo mkdir -p /etc/apt/keyrings```
+
 ```curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg```
 
 ```NODE_MAJOR=18```
@@ -21,6 +25,7 @@
 ```echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main" | sudo tee /etc/apt/sources.list.d/nodesource.list```
 
 ```sudo apt-get update```
+
 ```sudo apt-get install nodejs -y```
 
 
@@ -50,6 +55,7 @@ Install dependencies:
 Copy Nginx config:
 
 ```sudo unlink /etc/nginx/sites-available/default```
+
 ```rm /etc/nginx/sites-available/default```
 
 ```sudo cp nginx/proxy.conf /etc/nginx/conf.d```
@@ -62,9 +68,11 @@ Reload Nginx:
 
 ```sudo nginx -s reload```
 
-## Upload 'tokens'
+## Upload .env for server and frontend/.env
 
-Upload tokens folder to project root:
+Upload server .env to project root.
+
+Upload frontend/.env to project frontend/.
 
 ### Everhour API
 /tokens/everhour-api.json
@@ -92,11 +100,17 @@ Upload tokens folder to project root:
 
 ```npx tsc```
 
-```pm2 start build/server.ts```
+```pm2 start "npm run start:server" --name server```
+
+```pm2 start "npm run start:front" --name front```
 
 ## Github Actions comments
-Create JSON key for service account, add to github secrets.
+Create Cloud Google JSON key for service account, add to github secrets.
+
 Create SSH key for cloud project in Compute Engine -> Metadata, add private-ssh-key to github secrets.
-Add permissions to google service account: ```IAP-secured Tunnel User```
-To pull from service user, run:
+
+Add permissions to google service account, ssh tunnel permission name: ```IAP-secured Tunnel User```
+
+To enable git pull from service user ssh connection, run on VM:
+
 ```git config --global --add safe.directory [path/to/project]```
