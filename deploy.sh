@@ -2,9 +2,11 @@ cd /home/g0129507/lpds-everhour;
 sudo su &&
 git pull &&
 sudo npm i &&
-pm2 delete all &&
-pm2 start build/server --name server &&
+npm run build &&
+pm2 delete server &&
+pm2 start build/server.js --name server &&
 cd frontend &&
-sudo npm i &&
-sudo npm run build &&
+npm i &&
+npm run build &&
+pm2 delete front &&
 pm2 start "npm run start" --name front
