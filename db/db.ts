@@ -7,5 +7,5 @@ const firebaseApp = initializeApp({
     credential: cert(serviceAccount),
 });
 
-const db = getFirestore(firebaseApp, process.env.NODE_ENV == 'dev' ? 'lpds-dev' : '(default)')
+const db = getFirestore(firebaseApp, process.env.NODE_ENV == 'development' ? 'lpds-dev' : '(default)')
 export default db
