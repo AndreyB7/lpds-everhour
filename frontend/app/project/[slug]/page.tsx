@@ -20,7 +20,7 @@ export async function generateMetadata(
 }
 
 async function getData(slug: string): Promise<ProjectData> {
-  const res: Response = await fetch(`${process.env.API_URL}/${ slug }`, { next: { revalidate: 120 } })
+  const res: Response = await fetch(`${process.env.API_URL}/${ slug }`, { next: { revalidate: 3600 } })
   if (!res.ok) {
     console.log(`Failed to fetch data ${ JSON.stringify(res.json()) }`);
     // This will activate the closest `error.js` Error Boundary

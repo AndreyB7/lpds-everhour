@@ -8,7 +8,8 @@ export const metadata = {
 }
 
 async function getData(): Promise<tProject[]> {
-  const res = await fetch('http://localhost:1337/api/parameters', { next: { revalidate: 120 } })
+  // cached forever, will be revalidated on params update action
+  const res = await fetch('http://localhost:1337/api/parameters')
 
   if (!res.ok) {
     // This will activate the closest `error.js` Error Boundary
@@ -23,7 +24,8 @@ export default async function Parameters() {
 
   return (
     <Container size={ "2" }>
-      {projects.length ? <ProjectOptionsForm projects={ projects }/> : <Flex justify={"center"}>No Data Loaded...</Flex>}
+      { projects.length ? <ProjectOptionsForm projects={ projects }/> :
+        <Flex justify={ "center" }>No Data Loaded...</Flex> }
     </Container>
   )
 }
