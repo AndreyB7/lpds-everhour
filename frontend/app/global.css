@@ -1,0 +1,32 @@
+body {
+    margin: 0;
+}
+body {
+    --indigo-9: #465e75;
+    --indigo-10: #465e75dd;
+}
+
+.theme-custom .radix-themes {
+    --cursor-button: pointer;
+    --cursor-checkbox: default;
+    --cursor-disabled: not-allowed;
+    --cursor-link: pointer;
+    --cursor-menu-item: default;
+    --cursor-radio: default;
+    --cursor-slider-thumb: default;
+    --cursor-slider-thumb-active: default;
+    --cursor-switch: default;
+}
+
+.current {
+    opacity: .8;
+}
+
+.borderBox {
+    border: 1px solid var(--slate-a7);
+    border-radius: var(--radius-2);
+}
+
+.fieldError {
+    border-color: var(--ruby-a11);
+}

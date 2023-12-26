@@ -8,6 +8,7 @@ import { sendMail } from "./mailerService";
 import { slackMessage } from "./slackNotifierService";
 import { getEHData } from "../db/everhourDB";
 import { getWorkingDays } from "../helpers/days";
+import { everhourDataRefresh } from "./refreshService";
 
 export const runProjectMonitoring = async (projectParams: tProject): Promise<tMonitoring> => {
   const currentMonth = `${ new Date().getFullYear() }-${ new Date().getMonth() + 1 }`
@@ -18,6 +19,7 @@ export const runProjectMonitoring = async (projectParams: tProject): Promise<tMo
   }
 
   return {
+    shortName: projectParams.shortName,
     timeTotal: getTimeString(timeTotal),
     fullLimit: getTimeString(projectParams.fullLimit),
     percent: (timeTotal / projectParams.fullLimit * 100).toFixed(1) + '%',
@@ -28,20 +30,21 @@ export const runProjectMonitoring = async (projectParams: tProject): Promise<tMo
 export const runMonitoring = async () => {
   const projectsParams = await getProjectsParams()
   const workingDays = getWorkingDays()
-  let monitoringData: { [key: string]: tMonitoring } = {}
-  for (const projectShortName in projectsParams) {
-    monitoringData[projectShortName] = await runProjectMonitoring(projectsParams[projectShortName])
+  let monitoringData: tMonitoring[] = []
+  for (const p of projectsParams) {
+    monitoringData.push(await runProjectMonitoring(p))
   }
   const template = fs.readFileSync(path.join(__dirname, "../views/email.ejs")).toString()
   Promise.all(
-    Object.keys(monitoringData).map(
-      async (projectShortName) => {
-        const html = ejs.render(template, {projectShortName, ...monitoringData[projectShortName]})
-        sendMail(projectsParams[projectShortName].emailNotify, `Daily ${ projectShortName } Report`, html)
-        const projectData = monitoringData[projectShortName]
+    monitoringData.map(
+      async (pm) => {
+        const html = ejs.render(template, pm)
+        const project = projectsParams.find(p => p.shortName === pm.shortName)
+        if (!project) return
+        sendMail(project.emailNotify, `Daily ${ project.shortName } Report`, html)
         await slackMessage(
-          projectsParams[projectShortName].slackChatWebHook,
-          `${ projectShortName } time limit usage: ${ projectData.percent } (${ projectData.timeTotal } from ${ projectData.fullLimit })` +
+          project.slackChatWebHook,
+          `${ pm.shortName } time limit usage: ${ pm.percent } (${ pm.timeTotal } from ${ pm.fullLimit })` +
           `\n${ workingDays.ahead.length } from ${ workingDays.total.length } working days ahead.` +
           `\nPassed ${ (workingDays.passed.length / workingDays.total.length * 100).toFixed(1) }% of month.`
         )
@@ -49,4 +52,12 @@ export const runMonitoring = async () => {
   ).catch(e => {
     console.error(e)
   })
+}
+
+export const scheduledMonitoring = async () => {
+  const { isWorkingDay } = getWorkingDays()
+  if (isWorkingDay) {
+    await everhourDataRefresh()
+    await runMonitoring()
+  }
 }
