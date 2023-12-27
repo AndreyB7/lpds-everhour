@@ -111,6 +111,11 @@ Create SSH key for cloud project in Compute Engine -> Metadata, add private-ssh-
 
 Add permissions to google service account, ssh tunnel permission name: ```IAP-secured Tunnel User```
 
-To enable git pull from service user ssh connection, run on VM:
+To enable git pull from service user (runner) ssh connection, run on VM:
 
 ```git config --global --add safe.directory [path/to/project]```
+
+Add service user (runner) permission to access project folder:
+- Ownership for mail user ```chown -R [user]:[user-group]```
+- Add runner to main user group ```usermod -aG [user-group] runner```
+- Read and write right for group ```chmod g+w -R .```
