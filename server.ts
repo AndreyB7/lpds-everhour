@@ -59,7 +59,6 @@ app.get("/api/monitoring", async (req, res) => {
   res.send({ status: `monitoring run ok: ${ new Date().toString() }` })
 })
 
-// deprecated
 app.get("/api/:slug", async (req, res) => {
   try {
     // const projectsParams = await getProjectsParams();

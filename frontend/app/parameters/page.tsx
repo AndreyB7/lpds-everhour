@@ -1,4 +1,4 @@
-import { Container, Flex, Text } from "@radix-ui/themes";
+import { Container, Flex } from "@radix-ui/themes";
 import { tProject } from "../../../types/types";
 import ProjectOptionsForm from "@/app/parameters/ProjectOptionsForm";
 
@@ -9,7 +9,7 @@ export const metadata = {
 
 async function getData(): Promise<tProject[]> {
   // cached forever, will be revalidated on params update action
-  const res = await fetch('http://localhost:1337/api/parameters')
+  const res = await fetch(`${process.env.API_URL}/parameters`)
 
   if (!res.ok) {
     // This will activate the closest `error.js` Error Boundary
