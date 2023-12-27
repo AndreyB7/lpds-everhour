@@ -8,5 +8,5 @@ cd frontend &&
 npm i &&
 npm run build &&
 pm2 delete front || true &&
-pm2 start "npm run start" --name front
+pm2 start npm --name front -- run start
  

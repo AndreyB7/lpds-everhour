@@ -13,7 +13,7 @@ export default async function Home() {
     <Container>
       <Flex gap="2" align="center" direction="column">
         {session?.user ? <Text>Signed in as {session.user.email}</Text> : <Text>Not Signed In</Text>}
-        <Text>Dashboard v.0.0</Text>
+        <Text>Dashboard v.0.0.1</Text>
       </Flex>
     </Container>
   )
