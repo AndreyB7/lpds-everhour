@@ -1,11 +1,15 @@
 import { Text, Flex, Container, Heading } from "@radix-ui/themes";
 import { Metadata } from "next";
+import { EverhourTask } from "../../../../types/types";
+import * as React from "react";
+import Tree from "./tree";
 
 type ProjectData = {
   schemaTime: [],
   schemaTasks: [],
-  tasks: [],
+  tasks: EverhourTask[],
   timeTotal: string
+  lastUpdate: { time: string }
 } | null
 
 type Props = { params: { slug: string } }
@@ -20,10 +24,9 @@ export async function generateMetadata(
 }
 
 async function getData(slug: string): Promise<ProjectData> {
-  const res: Response = await fetch(`${process.env.API_URL}/${ slug }`, { next: { revalidate: 3600 } })
+  const res: Response = await fetch(`${ process.env.API_URL }/project/${ slug }`, { next: { revalidate: process.env.NODE_ENV == 'development' ? 0 : 3600 } })
   if (!res.ok) {
     console.log(`Failed to fetch data ${ JSON.stringify(res.json()) }`);
-    // This will activate the closest `error.js` Error Boundary
     throw new Error(`Failed to fetch data`);
   }
 
@@ -32,32 +35,22 @@ async function getData(slug: string): Promise<ProjectData> {
 
 export default async function ProjectSlug({ params }: Props) {
   const data = await getData(params.slug)
+
   return (
-    <Container>
-      <Flex gap="2" align="center" direction="column">
+    <Container size={"2"}>
+      <Flex gap="2" align={"center"} direction={"column"}>
+        <Text size={'1'}>Last refreshed: {data?.lastUpdate ? new Date(data.lastUpdate.time).toString() : 'ND'}</Text>
         <Heading>{ params.slug.toUpperCase() }</Heading>
       </Flex>
       { data && <>
-        <Text>
-          Time Total: { data.timeTotal }
-        </Text>
-        <Flex direction={ "column" }>
-          Tasks:<br/>
-          { data.tasks.map(task => (<Text key={ task[0] }>{ task[3] }</Text>)) }
+        <Flex justify={"end"} align={"end"}>
+          <Text align={ "right" }>
+            Time Total: { data.timeTotal }
+          </Text>
         </Flex>
-        <Flex>
-          <Text>
-          <pre>
-          Schema Time:<br/>
-            { JSON.stringify(data.schemaTime, null, 2) }
-          </pre>
-          </Text>
-          <Text>
-          <pre>
-          Schema Tasks:<br/>
-            { JSON.stringify(data.schemaTasks, null, 2) }
-          </pre>
-          </Text>
+        <hr/>
+        <Flex direction={ "column" }>
+          <Tree data={ data.tasks }/>
         </Flex>
       </> }
     </Container>

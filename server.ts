@@ -1,6 +1,6 @@
 import 'dotenv/config'
 import express from "express";
-import { getEHData, getTasksSchema, getTimeSchema } from "./db/everhourDB";
+import { getEHData, getProjectLastUpdate, getTasksSchema, getTimeSchema } from "./db/everhourDB";
 import { scheduleTask } from "./services/cronService";
 import { everhourDataRefresh } from "./services/refreshService";
 import { getTimeString } from "./helpers/time";
@@ -9,7 +9,8 @@ import {
   setProjectParams
 } from "./db/parametersDB";
 import { runMonitoring, scheduledMonitoring } from "./services/monitoringService";
-import { tProject } from "./types/types";
+import { EverhourTasks, EverhourTime, EverhourTimeByTask, tProject } from "./types/types";
+import { buildTree, convertDataToObject, createTaskTimeDict } from "./services/projectService";
 
 const app = express();
 
@@ -59,28 +60,30 @@ app.get("/api/monitoring", async (req, res) => {
   res.send({ status: `monitoring run ok: ${ new Date().toString() }` })
 })
 
-app.get("/api/:slug", async (req, res) => {
+app.get("/api/project/:slug", async (req, res) => {
   try {
     // const projectsParams = await getProjectsParams();
+    const projectShortName = req.params.slug.toUpperCase()
     const currentMonth = `${ new Date().getFullYear() }-${ new Date().getMonth() + 1 }`
 
     const timeSchema = await getTimeSchema()
     const tasksSchema = await getTasksSchema()
-    const projectData = await getEHData(req.params.slug.toUpperCase())
+    const projectData = await getEHData(projectShortName)
     if (!projectData || !projectData.tasks) {
       res.status(400).send({ error: 'not found projectData' })
+      return
     }
-    const taskData = JSON.parse(projectData.tasks[currentMonth])
-    const timeData = JSON.parse(projectData.time[currentMonth])
+    const taskDataRaw: string[] = JSON.parse(projectData.tasks[currentMonth])
+    const taskData = convertDataToObject<EverhourTasks>(taskDataRaw, tasksSchema)
+    const timeDataRaw = JSON.parse(projectData.time[currentMonth])
+    const timeData = createTaskTimeDict<EverhourTimeByTask>(timeDataRaw, timeSchema)
     let timeTotal = 0
-    if (timeData) {
-      timeData.forEach((task: any) => timeTotal += task[4])
-    }
+    Object.values(timeData).forEach((taskTimes) => taskTimes.forEach(task => timeTotal += task.time))
     res.send({
-      schemaTime: timeSchema.data()?.schema ?? [],
-      schemaTasks: tasksSchema.data()?.schema ?? [],
+      lastUpdate: await getProjectLastUpdate(projectShortName),
       timeTotal: timeTotal > 0 ? getTimeString(timeTotal) : 'ND',
-      tasks: taskData,
+      tasks: buildTree(taskData, timeData),
+      time: timeData
     })
   } catch (e) {
     console.log(e)

@@ -18,6 +18,56 @@ export type EverhourProjectData = {
   }
 }
 
+export type EverhourTask = {
+  id: string,
+  parent: string,
+  type: string,
+  name: string,
+  url: string,
+  status: string,
+  labels: [],
+  createdAt: string,
+  dueOn: string,
+  startOn: string,
+  iteration: string,
+  points: number,
+  projects: string[],
+  number: number,
+  estimate: number,
+  time: {},
+  attributes: null,
+  metrics: null,
+  unbillable: boolean,
+  completed: boolean,
+  completedAt: string,
+  users: string[],
+  // modified
+  children?:EverhourTask[]
+  items?:EverhourTask[]
+  timeSum?: string
+  groupTimeSum?: string
+}
+
+export type EverhourTasks = EverhourTask[]
+
+export type EverhourTime = {
+  id: string,
+  task: string,
+  user: string[],
+  date: string,
+  time: number,
+  timerTime: number,
+  comment: string,
+  rate: number,
+  isBillable: boolean,
+  costRate: string,
+  isInvoiced: boolean,
+}
+
+export type EverhourTimeByTask = {
+  [id:string]: EverhourTime[]
+}
+
 export type EverhourRequestOptions = {
   period: string[];
   users: null;

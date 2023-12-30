@@ -3,5 +3,5 @@ export const getTimeString = (seconds: number): string => {
   const minutes = Math.floor((seconds / 60) % 60);
   // const seconds = seconds % 60;
 
-  return hours + 'h ' + minutes + 'm';
+  return `${hours != 0 ? (hours + 'h ') : ''}${minutes}m`;
 }

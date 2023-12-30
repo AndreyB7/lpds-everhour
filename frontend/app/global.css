@@ -4,6 +4,20 @@ body {
 body {
     --indigo-9: #465e75;
     --indigo-10: #465e75dd;
+    --color-page-background: #faffef;
+}
+
+svg {
+    display: block;
+}
+
+img {
+    display: block;
+}
+
+hr {
+    border-color:#faaf40;
+    border-style: solid;
 }
 
 .theme-custom .radix-themes {
@@ -29,4 +43,13 @@ body {
 
 .fieldError {
     border-color: var(--ruby-a11);
+}
+
+@media print {
+    .navigation {
+        display: none !important;
+    }
+    .MuiTreeItem-iconContainer {
+        display: none !important;
+    }
 }

@@ -40,7 +40,7 @@ export async function actionUpdateParams(prevState: projectFormState, formData: 
   }
 
   try {
-    const res: Response = await fetch(`${process.env.API_URL}/parameters`, {
+    const res: Response = await fetch(`${ process.env.API_URL }/parameters`, {
       method: 'POST',
       body: JSON.stringify(project),
       headers: { 'Content-Type': 'application/json' },
@@ -55,5 +55,19 @@ export async function actionUpdateParams(prevState: projectFormState, formData: 
     return {
       message: 'Save parameters error'
     }
+  }
+}
+
+export const handleRefreshAction = async () => {
+  const session = await getServerSession(authConfig);
+  if (!session) return {
+    message: 'Not Logged In',
+  }
+  try {
+    const res: Response = await fetch(`${ process.env.API_URL }/refresh`, { next: { revalidate: 0 } })
+    revalidatePath('/project/[slug]', 'page')
+    return res.json()
+  } catch (e) {
+    return { message: 'Refresh request error' }
   }
 }
