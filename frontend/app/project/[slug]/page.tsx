@@ -3,6 +3,7 @@ import { Metadata } from "next";
 import { EverhourTask } from "../../../../types/types";
 import * as React from "react";
 import Tree from "./tree";
+import { ClientDateTime } from "@/components/ClientDateTime";
 
 type ProjectData = {
   schemaTime: [],
@@ -39,7 +40,7 @@ export default async function ProjectSlug({ params }: Props) {
   return (
     <Container size={"2"}>
       <Flex gap="2" align={"center"} direction={"column"}>
-        <Text size={'1'}>Last refreshed: {data?.lastUpdate ? new Date(data.lastUpdate.time).toString() : 'ND'}</Text>
+        <ClientDateTime date={data?.lastUpdate}/>
         <Heading>{ params.slug.toUpperCase() }</Heading>
       </Flex>
       { data && <>

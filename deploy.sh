@@ -1,4 +1,7 @@
-cd /home/g0129507/lpds-everhour;
+#!/usr/bin/env bash
+trap "set +x; sleep 5; set -x" DEBUG
+
+cd /home/g0129507/lpds-everhour &&
 git pull &&
 npm i &&
 npm run build &&
