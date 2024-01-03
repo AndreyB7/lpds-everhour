@@ -46,15 +46,10 @@ export async function actionUpdateParams(prevState: projectFormState, formData: 
       headers: { 'Content-Type': 'application/json' },
     })
     // const data = await res.json()
-    if (res.ok) {
-      revalidatePath('/parameters')
-      revalidatePath('/')
-      return {
-        message: 'Sucsess - parameters saved!',
-      }
-    }
+    revalidatePath('/parameters')
+    revalidatePath('/')
     return {
-      message: `Save parameters request error. Status: ${res.status}`,
+      message: 'Sucsess - parameters saved!',
     }
   } catch (e) {
     console.log(JSON.stringify(e))

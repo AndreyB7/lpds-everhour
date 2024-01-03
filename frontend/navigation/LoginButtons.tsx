@@ -13,12 +13,12 @@ const LoginButtons = ({ isLoggedIn }: Props) => {
   return (<>
     { isLoggedIn ? (
         <Link href="#" onClick={ () => signOut({ callbackUrl: "/" }) }>
-          <Button size="1">Sign Out</Button>
+          <Button size="1" className={'navButton'}>Sign Out</Button>
         </Link>
       ) :
       (
         <Link href={ '/signin' }>
-          <Button size="1" className={ pathname === '/signin' ? 'current' : '' }>Sign In</Button>
+          <Button size="1" className={ `navButton ${ pathname === '/signin' ? 'current' : '' }` }>Sign In</Button>
         </Link>
       ) }
   </>)
