@@ -1,10 +1,9 @@
-import db from "../db/db";
+import { paramsDb } from "./db";
 import collections from "../db/collections";
 import { tParameters, tProject } from "../types/types";
 
 let parameters: tParameters | null = null;
 let projectParameters: tProject[] | null = null;
-const paramsDb = db.collection(collections.parameters.name)
 
 export const setParametersData = async (params: tParameters) => {
   await paramsDb.doc(collections.parameters.docs.params).set(params);

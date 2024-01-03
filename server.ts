@@ -1,15 +1,16 @@
-import 'dotenv/config'
+import * as dotenv from "dotenv"
+dotenv.config()
 import express from "express";
 import { getEHData, getProjectLastUpdate, getTasksSchema, getTimeSchema } from "./db/everhourDB";
 import { scheduleTask } from "./services/cronService";
 import { everhourDataRefresh } from "./services/refreshService";
-import { getTimeString } from "./helpers/time";
+import { getMonthCode, getTimeString } from "./helpers/time";
 import {
   getProjectsParams,
   setProjectParams
 } from "./db/parametersDB";
 import { runMonitoring, scheduledMonitoring } from "./services/monitoringService";
-import { EverhourTasks, EverhourTime, EverhourTimeByTask, tProject } from "./types/types";
+import { EverhourTasks, EverhourTimeByTask, tProject } from "./types/types";
 import { buildTree, convertDataToObject, createTaskTimeDict } from "./services/projectService";
 
 const app = express();
@@ -64,18 +65,14 @@ app.get("/api/project/:slug", async (req, res) => {
   try {
     // const projectsParams = await getProjectsParams();
     const projectShortName = req.params.slug.toUpperCase()
-    const currentMonth = `${ new Date().getFullYear() }-${ new Date().getMonth() + 1 }`
+    const currentMonth = getMonthCode(new Date())
 
     const timeSchema = await getTimeSchema()
     const tasksSchema = await getTasksSchema()
     const projectData = await getEHData(projectShortName)
-    if (!projectData || !projectData.tasks) {
-      res.status(400).send({ error: 'not found projectData' })
-      return
-    }
-    const taskDataRaw: string[] = JSON.parse(projectData.tasks[currentMonth])
+    const taskDataRaw: string[] = projectData.tasks[currentMonth] ? JSON.parse(projectData.tasks[currentMonth]) : []
     const taskData = convertDataToObject<EverhourTasks>(taskDataRaw, tasksSchema)
-    const timeDataRaw = JSON.parse(projectData.time[currentMonth])
+    const timeDataRaw = projectData.time[currentMonth] ? JSON.parse(projectData.time[currentMonth]) : []
     const timeData = createTaskTimeDict<EverhourTimeByTask>(timeDataRaw, timeSchema)
     let timeTotal = 0
     Object.values(timeData).forEach((taskTimes) => taskTimes.forEach(task => timeTotal += task.time))
@@ -83,10 +80,10 @@ app.get("/api/project/:slug", async (req, res) => {
       lastUpdate: await getProjectLastUpdate(projectShortName),
       timeTotal: timeTotal > 0 ? getTimeString(timeTotal) : 'ND',
       tasks: buildTree(taskData, timeData),
-      time: timeData
     })
   } catch (e) {
     console.log(e)
+    res.status(400).send({ error: 'Get project data error' })
   }
 });
 

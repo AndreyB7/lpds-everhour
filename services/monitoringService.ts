@@ -1,5 +1,5 @@
 import { getProjectsParams } from "../db/parametersDB";
-import { getTimeString } from "../helpers/time";
+import { getMonthCode, getTimeString, getWorkingDays } from "../helpers/time";
 import { tMonitoring, tProject } from "../types/types";
 import fs from "fs";
 import path from "path";
@@ -7,11 +7,10 @@ import ejs from "ejs";
 import { sendMail } from "./mailerService";
 import { slackMessage } from "./slackNotifierService";
 import { getEHData } from "../db/everhourDB";
-import { getWorkingDays } from "../helpers/days";
 import { everhourDataRefresh } from "./refreshService";
 
 export const runProjectMonitoring = async (projectParams: tProject): Promise<tMonitoring> => {
-  const currentMonth = `${ new Date().getFullYear() }-${ new Date().getMonth() + 1 }`
+  const currentMonth = getMonthCode(new Date());
   const timeData = JSON.parse((await getEHData(projectParams.shortName)).time[currentMonth])
   let timeTotal = 0
   if (timeData) {

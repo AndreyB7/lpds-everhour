@@ -119,3 +119,23 @@ Add service user (runner) permission to access project folder:
 - Ownership for mail user ```chown -R [user]:[user-group]```
 - Add runner to main user group ```usermod -aG [user-group] runner```
 - Read and write right for group ```chmod g+w -R .```
+
+## Deploy manually to gcloud VM
+
+install gcloud CLI and init
+
+create folder on VM in /home/<user-name> folder
+
+```mkdir -p server && mkdir -p frontend```
+
+remember to create .env.prod files from .env.example for frontend and server
+
+check if pm2 installed on VM
+
+run ```sh manual-deploy.sh```
+
+files will be in your user home folder on VM instance-2
+
+login to VM and
+
+run ```sh manual-run.sh```

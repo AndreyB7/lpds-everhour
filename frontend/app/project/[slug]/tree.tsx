@@ -17,7 +17,7 @@ const content = (task: EverhourTask) => {
       </Box>
       <Flex gap={ '2' }>
         <Flex style={ { minWidth: "100px" } }>
-          some status
+          {task.status}
         </Flex>
         { task.groupTimeSum &&
           <Flex className={ 'time task-total' } justify={ "end" } align={ "center" }>

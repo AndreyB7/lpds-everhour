@@ -38,21 +38,26 @@ export default async function ProjectSlug({ params }: Props) {
   const data = await getData(params.slug)
 
   return (
-    <Container size={"2"}>
-      <Flex gap="2" align={"center"} direction={"column"}>
-        <ClientDateTime date={data?.lastUpdate}/>
+    <Container size={ "2" }>
+      <Flex gap="2" align={ "center" } direction={ "column" }>
+        <ClientDateTime date={ data?.lastUpdate }/>
         <Heading>{ params.slug.toUpperCase() }</Heading>
       </Flex>
       { data && <>
-        <Flex justify={"end"} align={"end"}>
+        <Flex justify={ "end" } align={ "end" }>
           <Text align={ "right" }>
-            Time Total: { data.timeTotal }
+            Time Total: { data?.timeTotal }
           </Text>
         </Flex>
         <hr/>
-        <Flex direction={ "column" }>
-          <Tree data={ data.tasks }/>
-        </Flex>
+        { data?.tasks.length ?
+          <Flex direction={ "column" }>
+            <Tree data={ data.tasks }/>
+          </Flex> :
+          <Flex direction={ "column" }>
+            <Text align={"center"}>No data to display</Text>
+          </Flex>
+        }
       </> }
     </Container>
   )

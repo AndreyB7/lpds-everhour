@@ -1,9 +1,6 @@
-import db from "../db/db";
+import { everhourDb, logsDb } from "./db";
 import collections from '../db/collections';
 import { EverhourData, EverhourProjectData } from "../types/types";
-
-const logsDb = db.collection(collections.log.name);
-const everhourDb = db.collection(collections.everhour.name);
 
 // setters
 export const setProjectEverhourData = async (projectShortName: string, key: string, data: EverhourData) => {
@@ -39,7 +36,11 @@ export const getTasksSchema = async () => {
 }
 
 export const getEHData = async (projectShortName: string) => {
-  return (await everhourDb.doc(projectShortName).get()).data() as EverhourProjectData;
+    const data = await everhourDb.doc(projectShortName).get()
+    if (!data.exists) {
+      throw Error('No such EH document!')
+    }
+    return data.data() as EverhourProjectData;
 }
 
 export const getProjectLastUpdate = async (projectShortName: string) => {

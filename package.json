@@ -4,7 +4,7 @@
   "description": "",
   "scripts": {
     "dev": "nodemon server.ts --ignore frontend",
-    "build": "npx tsc && cp -r views build/views",
+    "build": "npx tsc && cp -r views build/views && cp -r .env package.json package-lock.json build",
     "start": "node build/server.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
