@@ -19,7 +19,8 @@ const collections = {
         docs: {
             error: 'error',
             update: 'update',
-            mail: 'mail'
+            mail: 'mail',
+            lastMonitoring: 'lastMonitoring'
         }
     }
 }

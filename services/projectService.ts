@@ -1,5 +1,7 @@
 import { EverhourTask, EverhourTasks, EverhourTime, EverhourTimeByTask } from "../types/types";
-import { getTimeString } from "../helpers/time";
+import { getMonthCode, getTimeString } from "../helpers/time";
+import { getProjectEverhourData, getTasksSchema, getTimeSchema } from "../db/everhourDB";
+import { getProjectLastUpdate } from "../db/logsDB";
 
 const getTaskTotalTime = (taskTimeItems: EverhourTime[]) => {
   return taskTimeItems.map(tti => tti.time).reduce((s, time) => s + time);
@@ -57,4 +59,22 @@ export const createTaskTimeDict = <T>(data: string[], schema: string[]): T => {
   })
 
   return dict
+}
+
+export const getProjectData = async (projectShortName: string) => {
+  const currentMonth = getMonthCode(new Date())
+  const timeSchema = await getTimeSchema()
+  const tasksSchema = await getTasksSchema()
+  const projectData = await getProjectEverhourData(projectShortName)
+  const taskDataRaw: string[] = projectData.tasks[currentMonth] ? JSON.parse(projectData.tasks[currentMonth]) : []
+  const taskData = convertDataToObject<EverhourTasks>(taskDataRaw, tasksSchema)
+  const timeDataRaw = projectData.time[currentMonth] ? JSON.parse(projectData.time[currentMonth]) : []
+  const timeData = createTaskTimeDict<EverhourTimeByTask>(timeDataRaw, timeSchema)
+  let timeTotal = 0
+  Object.values(timeData).forEach((taskTimes) => taskTimes.forEach(task => timeTotal += task.time))
+  return {
+    lastUpdate: await getProjectLastUpdate(projectShortName),
+    timeTotal: timeTotal > 0 ? getTimeString(timeTotal) : 'ND',
+    tasks: buildTree(taskData, timeData),
+  }
 }

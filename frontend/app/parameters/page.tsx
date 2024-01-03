@@ -23,7 +23,7 @@ export default async function Parameters() {
   const projects = await getData()
 
   return (
-    <Container size={ "2" }>
+    <Container size={ "2" } p={"2"}>
       { projects.length ? <ProjectOptionsForm projects={ projects }/> :
         <Flex justify={ "center" }>No Data Loaded...</Flex> }
     </Container>

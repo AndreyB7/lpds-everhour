@@ -30,7 +30,6 @@ async function getData(slug: string): Promise<ProjectData> {
     console.log(`Failed to fetch data ${ JSON.stringify(res.json()) }`);
     throw new Error(`Failed to fetch data`);
   }
-
   return res.json()
 }
 
@@ -40,7 +39,7 @@ export default async function ProjectSlug({ params }: Props) {
   return (
     <Container size={ "2" }>
       <Flex gap="2" align={ "center" } direction={ "column" }>
-        <ClientDateTime date={ data?.lastUpdate }/>
+        <ClientDateTime date={ data?.lastUpdate?.time }/>
         <Heading>{ params.slug.toUpperCase() }</Heading>
       </Flex>
       { data && <>

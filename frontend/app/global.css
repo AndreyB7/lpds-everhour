@@ -1,10 +1,15 @@
 body {
     margin: 0;
 }
+
 body {
     --indigo-9: #465e75;
     --indigo-10: #465e75dd;
     --color-page-background: #faffef;
+}
+
+a {
+    text-decoration: none;
 }
 
 svg {
@@ -16,8 +21,9 @@ img {
 }
 
 hr {
-    border-color:#faaf40;
+    border-color: #faaf40;
     border-style: solid;
+    width: 100%;
 }
 
 .theme-custom .radix-themes {
@@ -36,9 +42,14 @@ hr {
     opacity: .8;
 }
 
+.navButton {
+    min-width: 82px;
+}
+
 .borderBox {
-    border: 1px solid var(--slate-a7);
+    border: 2px solid var(--slate-a7);
     border-radius: var(--radius-2);
+    min-width: 250px;
 }
 
 .fieldError {
@@ -49,6 +60,7 @@ hr {
     .navigation {
         display: none !important;
     }
+
     .MuiTreeItem-iconContainer {
         display: none !important;
     }

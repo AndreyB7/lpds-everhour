@@ -46,9 +46,15 @@ export async function actionUpdateParams(prevState: projectFormState, formData: 
       headers: { 'Content-Type': 'application/json' },
     })
     // const data = await res.json()
-    revalidatePath('/parameters')
+    if (res.ok) {
+      revalidatePath('/parameters')
+      revalidatePath('/')
+      return {
+        message: 'Sucsess - parameters saved!',
+      }
+    }
     return {
-      message: 'Sucsess - parameters saved!',
+      message: `Save parameters request error. Status: ${res.status}`,
     }
   } catch (e) {
     console.log(JSON.stringify(e))
@@ -66,6 +72,7 @@ export const handleRefreshAction = async () => {
   try {
     const res: Response = await fetch(`${ process.env.API_URL }/refresh`, { next: { revalidate: 0 } })
     revalidatePath('/project/[slug]', 'page')
+    revalidatePath('/')
     return res.json()
   } catch (e) {
     return { message: 'Refresh request error' }

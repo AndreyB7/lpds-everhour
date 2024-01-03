@@ -66,26 +66,31 @@ const ProjectOptionsForm = ({ projects }: Props) => {
   ]
 
   return (
-    <Flex gap={ "2" } direction={ "column" } align={'center'}>
+    <Flex gap={ "2" } direction={ "column" } align={ 'center' } justify={ "center" }>
       <Heading size={ "4" } mt={ "4" } mb={ "2" }>Parameters { currentProject.shortName }</Heading>
-      <Flex gap={ "2" } width={"100%"}>
-        <Flex gap={ "2" } direction={ "column" } style={{width:'25%'}}>
+      <Flex gap={ "2" } width={ "100%" } wrap={ "wrap" }>
+        <Flex gap={ "2" } direction={ "column" } style={ { flex: .3, minWidth: 150 } }>
           <Text>Projects:</Text>
           { projects.map(project =>
             <Button key={ project.shortName }
                     className={ project.shortName === currentProject.shortName ? 'current' : '' }
                     onClick={ () => selectProject(project) }>{ project.shortName }</Button>) }
-          <Button disabled={true}>ADD NEW</Button>
+          <Button disabled={ true }>ADD NEW</Button>
         </Flex>
-        <Flex px={ "5" } py={ "4" } className={ 'borderBox' } width={ '100%' } direction={"column"} grow={'1'}>
+        <Flex px={ "5" } py={ "4" } className={ 'borderBox' } style={ { flex: 1, minWidth: 350 } }
+              direction={ "column" } grow={ '1' }>
           <form className={ "rt-Flex rt-r-display-flex rt-r-fd-column rt-r-jc-start rt-r-gap-4 rt-r-w-100%" }
                 action={ formAction }>
             { fields.map(field =>
               <Label.Root key={ field.value } htmlFor={ field.name } style={ { position: 'relative' } }>
                 { field.label }
-                <TextField.Input mt={ "1" } type={ field.type } name={ field.name }
-                                 readOnly={ field?.readOnly }
-                                 defaultValue={ field.value } className={ field.error?.length ? 'fieldError' : '' }
+                <TextField.Input
+                  mt={ "1" }
+                  type={ field.type }
+                  name={ field.name }
+                  readOnly={ field?.readOnly }
+                  defaultValue={ field.value }
+                  className={ field.error?.length ? 'fieldError' : '' }
                 />
                 <Flex position={ "absolute" } translate={ "yes" }>
                   <Text size={ '1' } color={ 'ruby' }>{ field.error }</Text>
@@ -96,7 +101,7 @@ const ProjectOptionsForm = ({ projects }: Props) => {
           </form>
           { state?.message && <Flex justify={ "center" }><Text>{ state.message }</Text></Flex> }
         </Flex>
-        <Flex style={{width:'25%'}}></Flex>
+        <Flex style={ { flex: .3, minWidth: 150 } }></Flex>
       </Flex>
     </Flex>
   );

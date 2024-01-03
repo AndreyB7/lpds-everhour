@@ -6,12 +6,13 @@ import path from "path";
 import ejs from "ejs";
 import { sendMail } from "./mailerService";
 import { slackMessage } from "./slackNotifierService";
-import { getEHData } from "../db/everhourDB";
+import { getProjectEverhourData } from "../db/everhourDB";
 import { everhourDataRefresh } from "./refreshService";
+import { getProjectLastUpdate, setLastMonitoring } from "../db/logsDB";
 
 export const runProjectMonitoring = async (projectParams: tProject): Promise<tMonitoring> => {
-  const currentMonth = getMonthCode(new Date());
-  const timeData = JSON.parse((await getEHData(projectParams.shortName)).time[currentMonth])
+  const currentMonthCode = getMonthCode(new Date());
+  const timeData = JSON.parse((await getProjectEverhourData(projectParams.shortName)).time[currentMonthCode])
   let timeTotal = 0
   if (timeData) {
     timeData.forEach((task: any) => timeTotal += task[4])
@@ -22,17 +23,23 @@ export const runProjectMonitoring = async (projectParams: tProject): Promise<tMo
     timeTotal: getTimeString(timeTotal),
     fullLimit: getTimeString(projectParams.fullLimit),
     percent: (timeTotal / projectParams.fullLimit * 100).toFixed(1) + '%',
-    time: (new Date()).toString(),
+    time: (await getProjectLastUpdate(projectParams.shortName)).timeString,
   }
 }
 
 export const runMonitoring = async () => {
   const projectsParams = await getProjectsParams()
-  const workingDays = getWorkingDays()
   let monitoringData: tMonitoring[] = []
   for (const p of projectsParams) {
     monitoringData.push(await runProjectMonitoring(p))
   }
+  setLastMonitoring(monitoringData)
+  return monitoringData
+}
+
+export const sendMonitoringInfo = async (monitoringData: tMonitoring[]) => {
+  const projectsParams = await getProjectsParams()
+  const workingDays = getWorkingDays()
   const template = fs.readFileSync(path.join(__dirname, "../views/email.ejs")).toString()
   Promise.all(
     monitoringData.map(
@@ -57,6 +64,7 @@ export const scheduledMonitoring = async () => {
   const { isWorkingDay } = getWorkingDays()
   if (isWorkingDay) {
     await everhourDataRefresh()
-    await runMonitoring()
+    const monitoringData = await runMonitoring()
+    await sendMonitoringInfo(monitoringData)
   }
 }

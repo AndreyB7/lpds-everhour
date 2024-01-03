@@ -1,11 +1,12 @@
 'use client'
-import { Button, Flex } from "@radix-ui/themes";
+import { Button, Flex, Slot } from "@radix-ui/themes";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Session } from "next-auth";
 import LoginButtons from "@/navigation/LoginButtons";
 import { useState } from "react";
 import { handleRefreshAction } from "@/app/actions";
+import Loader from "@/icons/loader";
 
 const pagesPublic = [
   { label: 'Home', url: '/' },
@@ -34,19 +35,23 @@ export default function Nav({ session }: Props) {
 
   return (
     <Flex className={ 'navigation' } justify={ "center" } p={ "2" }>
-      <Flex gap="2" align="center" justify={ "center" }>
+      <Flex gap="2" align="center" justify={ "center" } wrap={ "wrap" }>
         { pagesPublic.map(page => (
           <Link key={ page.url } href={ page.url }>
-            <Button size="1" className={ pathname === page.url ? 'current' : '' }>{ page.label }</Button>
+            <Button size="1"
+                    className={ `navButton ${ pathname === page.url ? 'current' : '' }` }>{ page.label }</Button>
           </Link>
         )) }
         { isLoggedIn && (<>
             { pagesProtected.map(page => (
               <Link key={ page.url } href={ page.url }>
-                <Button size="1" className={ pathname === page.url ? 'current' : '' }>{ page.label }</Button>
+                <Button size="1"
+                        className={ `navButton ${ pathname === page.url ? 'current' : '' }` }>{ page.label }</Button>
               </Link>
             )) }
-            <Button size="1" onClick={handleRefresh} disabled={isRefreshing}>{ isRefreshing ? 'Loading' : 'Refresh' }</Button>
+            <Button size="1" onClick={ handleRefresh } disabled={ isRefreshing } className={ 'navButton' }>
+              { isRefreshing ? <Slot><Loader/></Slot> : 'Refresh' }
+            </Button>
           </>
         ) }
         <LoginButtons isLoggedIn={ isLoggedIn }/>

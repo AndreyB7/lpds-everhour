@@ -16,8 +16,8 @@ const content = (task: EverhourTask) => {
         <Text>{ task.name }</Text>
       </Box>
       <Flex gap={ '2' }>
-        <Flex style={ { minWidth: "100px" } }>
-          {task.status}
+        <Flex style={ { minWidth: "80px" } }>
+          <Text>{task.status}</Text>
         </Flex>
         { task.groupTimeSum &&
           <Flex className={ 'time task-total' } justify={ "end" } align={ "center" }>
@@ -55,7 +55,7 @@ const treeStyles = [
   },
   { '.MuiTreeItem-content.Mui-focused': { backgroundColor: 'transparent' } },
   { '.root .child .rt-Text': { fontSize: '85%' } },
-  { '.time': { minWidth: '100px', width: '100%', textAlign: 'right' } },
+  { '.time': { minWidth: '80px', width: '100%', textAlign: 'right' } },
   { '.root>.MuiTreeItem-content .task-time': { display: 'none' } },
   { '.root>.MuiTreeItem-content.Mui-expanded .task-time': { display: 'flex', fontSize: '85%' } },
   { '.root>.MuiTreeItem-content.Mui-expanded .task-total': { display: 'none' } },
