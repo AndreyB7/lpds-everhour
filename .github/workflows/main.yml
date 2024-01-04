@@ -61,9 +61,13 @@ jobs:
         with:
           credentials_json: '${{ secrets.GCE_SA_KEY }}'
 
-      - name: push to vm
+      - name: 'Set up Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v2'
+        with:
+          skip_install: true
+
+      - name: Push to vm
         run: |
-          ls -la &&
           gcloud compute scp --project="lpds-everhour" --zone="us-central1-a" export.tar instance-2:  
 
       - id: compute-ssh
