@@ -63,7 +63,7 @@ jobs:
 
       - name: push to vm
         run: |
-          gcloud compute scp deploy/export.tar instance-2:  
+          gcloud compute scp --project="lpds-everhour" --zone="us-central1-a" deploy/export.tar instance-2:  
 
       - id: compute-ssh
         uses: google-github-actions/ssh-compute@v1
