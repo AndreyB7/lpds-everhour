@@ -69,12 +69,9 @@ jobs:
           export_default_credentials: true
           skip_install: true
 
-      - name: Configure gcloud
-        run: gcloud config set compute/zone us-central1-a
-
       - name: Push files to vm
         run: |
-          gcloud compute scp --project="lpds-everhour" export.tar deploy.sh instance-2:  
+          gcloud compute scp --project="lpds-everhour" --zone=us-central1-a export.tar deploy.sh instance-2:  
 
 #      - id: compute-ssh
 #        uses: google-github-actions/ssh-compute@v1
@@ -84,7 +81,7 @@ jobs:
 #          ssh_private_key: '${{ secrets.GCP_SSH_PRIVATE_KEY }}'
 #          script: '${{ github.workspace }}/deploy.sh'
 
-      - name: Reload nginx
+      - name: Run deploy process on VM
         run: gcloud compute ssh instance-2 --command="sh deploy.sh"
 
 #      - id: 'Output'
