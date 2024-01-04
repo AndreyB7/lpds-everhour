@@ -69,7 +69,7 @@ jobs:
 
       - name: Push files to vm
         run: |
-          gcloud compute scp --project="lpds-everhour" --zone=us-central1-a export.tar deploy.sh instance-2:  
+          gcloud compute scp --zone=us-central1-a export.tar deploy.sh instance-2:  
 
 #      - id: compute-ssh
 #        uses: google-github-actions/ssh-compute@v1
@@ -80,7 +80,7 @@ jobs:
 #          script: '${{ github.workspace }}/deploy.sh'
 
       - name: Run deploy process on VM
-        run: gcloud compute ssh instance-2 --command="sh deploy.sh"
+        run: gcloud compute ssh instance-2 --zone=us-central1-a --command="sh deploy.sh"
 
 #      - id: 'Output'
 #        run: |-
