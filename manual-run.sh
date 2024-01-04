@@ -1,10 +1,8 @@
 ##!/usr/bin/env bash
 
-tar -xf frontend.tar -C frontend
-tar -xf server.tar -C server
-cd server
-npm ci &&
-cd ..
+tar -xzf frontend.tar -C frontend
+tar -xzf server.tar -C server
+npm ci --prefix server
 pm2 delete all
 cd server
 pm2 start server.js --name server

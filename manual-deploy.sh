@@ -3,8 +3,8 @@
 npm run build &&
 cd frontend && npm run build &&
 cd ..
-tar --exclude='.env' --disable-copyfile --no-xattrs -cf server.tar -C build .
-tar --exclude='.env' --disable-copyfile --no-xattrs -cf frontend.tar -C frontend/.next/standalone .
+tar --exclude='.env' --disable-copyfile --no-xattrs -czf server.tar -C build .
+tar --exclude='.env' --disable-copyfile --no-xattrs -czf frontend.tar -C frontend/.next/standalone .
 gcloud compute scp server.tar instance-2:
 gcloud compute scp frontend.tar instance-2: &&
 rm server.tar
