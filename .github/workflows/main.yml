@@ -31,9 +31,9 @@ jobs:
 
       - name: npm install, build, and test
         run: |
-          npm ci
+          npm ci &&
           npm run build &&
-          npm ci --prefix frontend
+          npm ci --prefix frontend &&
           npm run build --prefix frontend
           mkdir export
           mv build export/server
