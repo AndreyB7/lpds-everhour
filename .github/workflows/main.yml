@@ -38,7 +38,9 @@ jobs:
           mkdir export &&
           mv build export/server &&
           mv frontend/.next/standalone export/frontend &&
+          ls -la export &&
           mkdir deploy &&
+          ls -la &&
           tar --exclude='.env' -czf deploy/export.tar -C export
 
       - name: Upload artifact for deployment job
