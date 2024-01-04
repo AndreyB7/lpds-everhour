@@ -36,12 +36,10 @@ jobs:
           npm ci --prefix frontend &&
           npm run build --prefix frontend &&
           mkdir export &&
-          mv build export/server &&
-          mv frontend/.next/standalone export/frontend &&
-          ls -la export &&
+          cp -r build export/server &&
+          cp -r frontend/.next/standalone export/frontend &&
           mkdir deploy &&
-          ls -la &&
-          tar --exclude='.env' -czf deploy/export.tar -C export
+          tar --exclude='.env' -czf deploy/export.tar -C export .
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
