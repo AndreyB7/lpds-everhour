@@ -39,7 +39,7 @@ jobs:
           mv build export/server &&
           mv frontend/.next/standalone export/frontend &&
           mkdir deploy &&
-          tar --exclude='.env' --disable-copyfile --no-xattrs -czf deploy/export.tar -C export
+          tar --exclude='.env' -czf deploy/export.tar -C export
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
