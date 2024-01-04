@@ -57,30 +57,39 @@ jobs:
         with:
           name: node-app
 
-      - uses: google-github-actions/auth@v2
-        with:
-          credentials_json: '${{ secrets.GCE_SA_KEY }}'
+#      - uses: google-github-actions/auth@v2
+#        with:
+#          credentials_json: ${{ secrets.GCE_SA_KEY }}
 
-      - name: 'Set up Cloud SDK'
-        uses: 'google-github-actions/setup-gcloud@v2'
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
         with:
+          project_id: lpds-everhour
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          export_default_credentials: true
           skip_install: true
 
-      - name: Push to vm
+      - name: Configure gcloud
+        run: gcloud config set compute/zone us-central1-a
+
+      - name: Push files to vm
         run: |
-          gcloud compute scp --project="lpds-everhour" --zone="us-central1-a" export.tar instance-2:  
+          gcloud compute scp --project="lpds-everhour" export.tar deploy.sh instance-2:  
 
-      - id: compute-ssh
-        uses: google-github-actions/ssh-compute@v1
-        with:
-          instance_name: 'instance-2'
-          zone: 'us-central1-a'
-          ssh_private_key: '${{ secrets.GCP_SSH_PRIVATE_KEY }}'
-          script: '${{ github.workspace }}/deploy.sh'
+#      - id: compute-ssh
+#        uses: google-github-actions/ssh-compute@v1
+#        with:
+#          instance_name: 'instance-2'
+#          zone: 'us-central1-a'
+#          ssh_private_key: '${{ secrets.GCP_SSH_PRIVATE_KEY }}'
+#          script: '${{ github.workspace }}/deploy.sh'
 
-      - id: 'Output'
-        run: |-
-          echo 'Output ls workspace'
-          ls -la ${{ github.workspace }}
-          echo '${{ steps.compute-ssh.outputs.stdout }}'
-          echo '${{ steps.compute-ssh.outputs.stderr }}'
+      - name: Reload nginx
+        run: gcloud compute ssh instance-2 --command="sh deploy.sh"
+
+#      - id: 'Output'
+#        run: |-
+#          echo 'Output ls workspace'
+#          ls -la ${{ github.workspace }}
+#          echo '${{ steps.compute-ssh.outputs.stdout }}'
+#          echo '${{ steps.compute-ssh.outputs.stderr }}'
