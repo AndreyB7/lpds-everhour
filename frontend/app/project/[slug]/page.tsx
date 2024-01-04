@@ -40,7 +40,7 @@ export default async function ProjectSlug({ params }: Props) {
     <Container size={ "2" }>
       <Flex gap="2" align={ "center" } direction={ "column" }>
         <ClientDateTime date={ data?.lastUpdate?.time }/>
-        <Heading>{ params.slug.toUpperCase() }</Heading>
+        <Heading size={ "4" } mt={ "4" } mb={ "2" }>{ params.slug.toUpperCase() }</Heading>
       </Flex>
       { data && <>
         <Flex justify={ "end" } align={ "end" }>

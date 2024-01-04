@@ -8,7 +8,6 @@ import { Flex } from "@radix-ui/themes";
 import React from "react";
 
 const inter = Roboto({ weight: ['400'], subsets: ['latin'] })
-
 export default async function RootLayout({
                                            children,
                                          }: {

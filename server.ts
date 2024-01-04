@@ -7,12 +7,26 @@ import {
   setProjectParams
 } from "./db/parametersDB";
 import { runMonitoring, scheduledMonitoring, sendMonitoringInfo } from "./services/monitoringService";
-import { tProject } from "./types/types";
+import { TeamMember, tProject } from "./types/types";
 import { getProjectData } from "./services/projectService";
 import { getLastMonitoring } from "./db/logsDB";
+import everhourConfig from "./tokens/everhour-api";
 
 const app = express();
 app.use(express.json());
+
+app.get("/api/team", async (req, res) => {
+  try {
+    const data = await fetch(
+      'https://api-ro.everhour.com/team/users', {
+        headers: { "X-Api-Key": everhourConfig.key ? everhourConfig.key : '' }
+      });
+    const team = (await data.json()).filter((tm: TeamMember) => tm.status !== 'removed' && tm.type == 'contractor')
+    res.send(team)
+  } catch (e: any) {
+    res.send({ error: 'Error', message: e.message });
+  }
+})
 
 // routes
 app.get("/api/refresh", async (req, res) => {

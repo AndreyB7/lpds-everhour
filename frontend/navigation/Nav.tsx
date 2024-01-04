@@ -14,8 +14,8 @@ const pagesPublic = [
 
 const pagesProtected = [
   { label: 'Parameters', url: '/parameters' },
-  { label: 'COA', url: '/project/coa' },
-  { label: 'SVT', url: '/project/svt' },
+  { label: 'Projects', url: '/project' },
+  { label: 'Team', url: '/team' },
 ]
 
 type Props = {

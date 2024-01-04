@@ -6,6 +6,7 @@ body {
     --indigo-9: #465e75;
     --indigo-10: #465e75dd;
     --color-page-background: #faffef;
+    --accent-color: #faaf40;
 }
 
 a {
@@ -21,7 +22,7 @@ img {
 }
 
 hr {
-    border-color: #faaf40;
+    border-color: var(--accent-color);
     border-style: solid;
     width: 100%;
 }
@@ -54,6 +55,10 @@ hr {
 
 .fieldError {
     border-color: var(--ruby-a11);
+}
+
+.navigation.secondary {
+    border-top:2px solid var(--accent-color)
 }
 
 @media print {

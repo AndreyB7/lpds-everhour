@@ -94,14 +94,16 @@ export type projectFormState = {
   }
 }
 
-export type tParameters = {
-  projects: { [key: string]: tProject }
-}
-
 export type tMonitoring = {
   shortName: string;
   timeTotal: string;
   fullLimit: string;
   percent: string;
   time: string;
+}
+
+export type TeamMember = {
+  name: string,
+  status: string,
+  type: string
 }

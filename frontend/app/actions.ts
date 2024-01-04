@@ -40,12 +40,11 @@ export async function actionUpdateParams(prevState: projectFormState, formData: 
   }
 
   try {
-    const res: Response = await fetch(`${ process.env.API_URL }/parameters`, {
+    await fetch(`${ process.env.API_URL }/parameters`, {
       method: 'POST',
       body: JSON.stringify(project),
       headers: { 'Content-Type': 'application/json' },
     })
-    // const data = await res.json()
     revalidatePath('/parameters')
     revalidatePath('/')
     return {
