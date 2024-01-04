@@ -40,6 +40,7 @@ jobs:
           cp -r frontend/.next/standalone export/frontend &&
           mkdir deploy &&
           tar --exclude='.env' -czf deploy/export.tar -C export .
+          cp deploy.sh deploy/deploy.sh
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
@@ -60,6 +61,10 @@ jobs:
         with:
           credentials_json: '${{ secrets.GCE_SA_KEY }}'
 
+      - name: push to vm
+        run: |
+          gcloud compute scp deploy/export.tar instance-2:  
+
       - id: compute-ssh
         uses: google-github-actions/ssh-compute@v1
         with:
@@ -67,10 +72,6 @@ jobs:
           zone: 'us-central1-a'
           ssh_private_key: '${{ secrets.GCP_SSH_PRIVATE_KEY }}'
           script: '${{ github.workspace }}/deploy.sh'
-
-      - name: push to vm
-        run: |
-          gcloud compute scp deploy/export.tar instance-2: 
 
       - id: 'Output'
         run: |-
