@@ -67,6 +67,8 @@ jobs:
           zone: 'us-central1-a'
           ssh_private_key: '${{ secrets.GCP_SSH_PRIVATE_KEY }}'
           script: '${{ github.workspace }}/deploy.sh'
+
+      - name: push to vm
         run: |
           gcloud compute scp deploy/export.tar instance-2: 
 
