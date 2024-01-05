@@ -53,16 +53,16 @@ jobs:
       - name: 'Set up Cloud SDK'
         uses: 'google-github-actions/setup-gcloud@v2'
 
-#      - id: 'compute-ssh'
-#        uses: 'google-github-actions/ssh-compute@v1'
-#        with:
-#          instance_name: 'example-instance'
-#          zone: 'us-central1-a'
-#          ssh_private_key: '${{ secrets.GCP_SSH_PRIVATE_KEY }}'
-#          command: 'echo Hello world'
+      - id: 'compute-ssh'
+        uses: 'google-github-actions/ssh-compute@v1'
+        with:
+          instance_name: 'example-instance'
+          zone: 'us-central1-a'
+          ssh_private_key: '${{ secrets.GCP_SSH_PRIVATE_KEY }}'
+          command: 'echo Hello world'
 
       - name: Create SSH file
-        run: echo ${{ secrets.GCP_SSH_PRIVATE_KEY }} > /home/runner/gcloud
+        run: echo "${{ secrets.GCP_SSH_PRIVATE_KEY }}" > /home/runner/gcloud
 
       - name: Test command
         run: gcloud compute ssh instance-2 --zone us-central1-a --ssh-key-file /home/runner/gcloud --command="la -la"
