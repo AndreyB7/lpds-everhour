@@ -59,7 +59,7 @@ jobs:
 #        run: gcloud info
 
       - name: Push files to VM
-        run: gcloud compute scp export.tar run.sh instance-2:~ --zone=us-central1-a --ssh-key=${{ secrets.GCLOUD_SSH_KEY }}
+        run: gcloud compute scp export.tar run.sh instance-2:~ --zone=us-central1-a --ssh-key-file=${{ secrets.GCLOUD_SSH_KEY }}
 
       - name: Run deploy process on VM
         run: gcloud compute ssh instance-2 --zone=us-central1-a --command="sh run.sh"
