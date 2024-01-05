@@ -61,8 +61,11 @@ jobs:
 #          ssh_private_key: '${{ secrets.GCP_SSH_PRIVATE_KEY }}'
 #          command: 'echo Hello world'
 
+      - name: Create SSH file
+        run: echo ${{ secrets.GCP_SSH_PRIVATE_KEY }} > /home/runner/gcloud
+
       - name: Test command
-        run: gcloud compute ssh instance-2 --zone=us-central1-a --command="la -la"
+        run: gcloud compute ssh instance-2 --zone us-central1-a --ssh-key-file /home/runner/gcloud --command="la -la"
 
       - name: push to vm
         run: |
