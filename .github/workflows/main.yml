@@ -55,6 +55,9 @@ jobs:
         with:
           project_id: lpds-everhour
 
+      - name: info
+        run: gcloud info
+
       - name: Push files to VM
         run: gcloud compute scp export.tar run.sh instance-2:~ --zone=us-central1-a
 
