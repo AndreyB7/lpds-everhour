@@ -57,6 +57,6 @@ jobs:
 
       - name: copy builds to server
         run: |
-          rsync -vrm export.tar ${{ secrets.USER_SERVER }}:
-          rsync -vrm run.sh ${{ secrets.USER_SERVER }}:
+          scp export.tar ${{ secrets.USER_SERVER }}:
+          scp run.sh ${{ secrets.USER_SERVER }}:
           ssh ${{ secrets.USER_SERVER }} "sh run.sh"
