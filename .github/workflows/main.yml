@@ -58,7 +58,7 @@ jobs:
 
       - name: Push files to vm
         run: |
-          gcloud compute scp --zone=us-central1-a export.tar run.sh instance-2:  
+          gcloud compute scp export.tar run.sh instance-2: --zone=us-central1-a  
 
       - name: Run deploy process on VM
         run: gcloud compute ssh instance-2 --zone=us-central1-a --command="sh run.sh"
