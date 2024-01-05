@@ -69,14 +69,7 @@ For GitHub pipeline upload to 'runner' user home directory (home/runner) with na
 
 ## GitHub Actions comments
 
-Create Cloud Google JSON key for service account, add to github secrets.
-
-Add permissions to google service account, ssh tunnel permission name: ```IAP-secured Tunnel User```
-
-Add service user (runner) permission to access project folder:
-- Ownership for main user ```chown -R [user]:[user-group] .```
-- Add runner to main user group ```usermod -aG [user-group] runner```
-- Read and write right for group ```chmod g+w -R .```
+Add secrets for GitHub actions
 
 ## Deploy manually to gcloud VM
 
