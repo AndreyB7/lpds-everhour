@@ -46,16 +46,17 @@ jobs:
         with:
           name: node-app
 
-      - uses: google-github-actions/auth@v2
-        with:
-          credentials_json: '${{ secrets.GCE_SA_KEY }}'
+      - name: Setup SSH
+        run: | 
+          mkdir -p ~/.ssh/
+          echo "${{ secrets.SSH_PRIV_KEY }}" > ~/.ssh/id_rsa
+          echo "${{ secrets.SSH_PUB_KEY }}" > ~/.ssh/id_rsa.pub
+          chmod 600 ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa.pub
+          ssh-keyscan -H ${{ secrets.IP }} >> ~/.ssh/known_hosts
 
-      - name: 'Set up Cloud SDK'
-        uses: 'google-github-actions/setup-gcloud@v2'
-
-      - name: push to vm
+      - name: copy builds to server
         run: |
-          gcloud compute scp --project="lpds-everhour" --zone="us-central1-a" export.tar instance-2:
-
-      - name: Run deploy process on VM
-        run: gcloud compute ssh instance-2 --zone=us-central1-a --command="sh run.sh"
+          rsync -vrm export.tar ${{ secrets.USER_SERVER }}:
+          rsync -vrm run.sh ${{ secrets.USER_SERVER }}:
+          ssh ${{ secrets.USER_SERVER }} "sh run.sh"
