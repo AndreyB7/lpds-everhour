@@ -54,5 +54,13 @@ jobs:
         run: |
           gcloud compute scp export.tar run.sh instance-2:~ --zone=us-central1-a
 
-      - name: Run deploy process on VM
-        run: gcloud compute ssh instance-2 --zone=us-central1-a --command="sh run.sh"
+#      - name: Run deploy process on VM
+#        run: gcloud compute ssh instance-2 --zone=us-central1-a --command="sh run.sh"
+
+      - id: 'compute-ssh'
+        uses: 'google-github-actions/ssh-compute@v1'
+        with:
+          instance_name: instance-2
+          zone: us-central1-a
+          ssh_private_key: ${{ secrets.GCP_SSH_PRIVATE_KEY }}
+          command: sh run.sh
