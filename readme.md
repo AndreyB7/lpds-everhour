@@ -1,16 +1,23 @@
-## New VW instance setup:
+## Development Launch App
 
-## Install Nginx:
+Server
+```npm i```
+```npm run dev```
+
+Frontend
+
+```npm i --prefix frontend```
+```npm run dev --prefix frontend```
+
+## New Google cloud VW instance setup:
+
+### Install Nginx:
 
 ```sudo apt update```
 
 ```sudo apt install nginx -y```
 
-## Install Git:
-
-```sudo apt-get install git-all```
-
-## Install Node:
+### Install Node:
 
 ```sudo apt-get update```
 
@@ -28,29 +35,7 @@
 
 ```sudo apt-get install nodejs -y```
 
-
-## Install APP:
-
-Logout from root:
-```exit```
-
-```cd /home/[user]```
-
-```mkdir lpds-everhour```
-
-```cd lpds-everhour```
-
-```git init```
-
-```git remote add origin [repo-url]```
-
-Pull project:
-
-```git pull origin main```
-
-Install dependencies:
-
-```npm install```
+### Configure Nginx:
 
 Copy Nginx config:
 
@@ -58,7 +43,9 @@ Copy Nginx config:
 
 ```rm /etc/nginx/sites-available/default```
 
-```sudo cp nginx/proxy.conf /etc/nginx/conf.d```
+Upload nginx/proxy.conf to VM [how to upload doc](https://cloud.google.com/compute/docs/instances/transfer-files)
+
+```sudo cp proxy.conf /etc/nginx/conf.d```
 
 Check configs:
 
@@ -68,43 +55,20 @@ Reload Nginx:
 
 ```sudo nginx -s reload```
 
-## Upload .env for server and frontend/.env
+### Upload .env for server and frontend/.env
 
 Upload server .env to project root.
 
 Upload frontend/.env to project frontend/.
 
-### Everhour API
-/tokens/everhour-api.json
-{
-    "key": [API KEY],
-    "url": "https://api-ro.everhour.com/reports/data"
-}
+For GitHub pipeline upload to 'runner' user home directory (home/runner) with names .env.prod_server .env.prod_frontend
 
-### Firestore service account json credentials
-/tokens/firestore.json
-{
-  projectId: FirestoreJSON.project_id,
-  privateKey: FirestoreJSON.private_key,
-  clientEmail: FirestoreJSON.client_email,
-}
+### Production run with PM2
 
-## Development Launch App
-```npm run dev```
-
-
-## Production with PM2
 ```sudo npm install pm2 -g```
 
-```pm2 install typescript```
+## GitHub Actions comments
 
-```npx tsc```
-
-```pm2 start "npm run start:server" --name server```
-
-```pm2 start "npm run start:front" --name front```
-
-## Github Actions comments
 Create Cloud Google JSON key for service account, add to github secrets.
 
 Create SSH key for cloud project in Compute Engine -> Metadata, add private-ssh-key to github secrets.
@@ -122,20 +86,18 @@ Add service user (runner) permission to access project folder:
 
 ## Deploy manually to gcloud VM
 
-install gcloud CLI and init
+Install gcloud CLI and init.
 
-create folder on VM in /home/<user-name> folder
+Create folder on VM in /home/<user-name> folder.
 
 ```mkdir -p server && mkdir -p frontend```
 
-remember to create .env.prod files from .env.example for frontend and server
-
-check if pm2 installed on VM
+Remember to create .env.prod_server frontend/.env.prod_frontend files from .env.example for frontend and server.
 
 run ```sh manual-deploy.sh```
 
-files will be in your user home folder on VM instance-2
+Files will be in your user home folder on VM instance-2.
 
-login to VM and
+Login to VM and 
 
 run ```sh manual-run.sh```

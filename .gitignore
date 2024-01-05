@@ -1,5 +1,5 @@
 .idea
 .env
-.env.prod
+.env.prod*
 node_modules
 build
