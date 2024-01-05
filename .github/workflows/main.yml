@@ -56,9 +56,11 @@ jobs:
           project_id: lpds-everhour
           skip_install: true
 
+      - name: 'Use gcloud CLI'
+        run: 'gcloud info'
+
       - name: Push files to vm
-        run: |
-          gcloud compute scp export.tar run.sh instance-2: --zone=us-central1-a  
+        run: 'gcloud compute scp export.tar run.sh instance-2: --zone=us-central1-a'
 
       - name: Run deploy process on VM
         run: gcloud compute ssh instance-2 --zone=us-central1-a --command="sh run.sh"
