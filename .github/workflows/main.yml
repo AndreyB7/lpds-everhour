@@ -56,15 +56,18 @@ jobs:
       - id: 'compute-ssh'
         uses: 'google-github-actions/ssh-compute@v1'
         with:
-          instance_name: 'example-instance'
+          instance_name: lpds-everhour
           zone: 'us-central1-a'
           ssh_private_key: '${{ secrets.GCP_SSH_PRIVATE_KEY }}'
           command: 'echo Hello world'
 
+      - name: Test command 1
+        run: gcloud compute ssh instance-2 --zone us-central1-a --ssh-key-file /home/runner/gcloud --command="la -la"
+
       - name: Create SSH file
         run: echo "${{ secrets.GCP_SSH_PRIVATE_KEY }}" > /home/runner/gcloud
 
-      - name: Test command
+      - name: Test command 2 with keyfile
         run: gcloud compute ssh instance-2 --zone us-central1-a --ssh-key-file /home/runner/gcloud --command="la -la"
 
       - name: push to vm
