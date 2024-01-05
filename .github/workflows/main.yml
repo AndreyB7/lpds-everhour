@@ -50,10 +50,22 @@ jobs:
         with:
           credentials_json: '${{ secrets.GCE_SA_KEY }}'
 
+      - name: 'Set up Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v2'
+
+#      - id: 'compute-ssh'
+#        uses: 'google-github-actions/ssh-compute@v1'
+#        with:
+#          instance_name: 'example-instance'
+#          zone: 'us-central1-a'
+#          ssh_private_key: '${{ secrets.GCP_SSH_PRIVATE_KEY }}'
+#          command: 'echo Hello world'
+
+      - name: Test command
+        run: gcloud compute ssh instance-2 --zone=us-central1-a --command="la -la"
+
       - name: push to vm
         run: |
-          ls -la &&
-          gcloud info &&
           gcloud compute scp --project="lpds-everhour" --zone="us-central1-a" export.tar instance-2:  
 
       - name: Run deploy process on VM
