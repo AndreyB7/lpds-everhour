@@ -9,24 +9,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - run: echo "🎉 The job was automatically triggered by a ${{ github.event_name }} event."
-      - run: echo "🐧 This job is now running on a ${{ runner.os }} server hosted by GitHub!"
-      - run: echo "🔎 The name of your branch is ${{ github.ref }} and your repository is ${{ github.repository }}."
-
       - name: Check out repository code
         uses: actions/checkout@v4
-      - run: echo "💡 The ${{ github.repository }} repository has been cloned to the runner."
-      - run: echo "🖥️ The workflow is now ready to test your code on the runner."
-
-      - name: List files in the repository
-        run: |
-          ls -la ${{ github.workspace }}
-      - run: echo "🍏 This job's status is ${{ job.status }}."
 
       - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ env.NODE_VERSION }}
+          node-version: 18
           cache: 'npm'
 
       - name: npm install, build, and test
@@ -40,7 +29,7 @@ jobs:
           cp -r frontend/.next/standalone export/frontend &&
           mkdir deploy &&
           tar --exclude='.env' -czf deploy/export.tar -C export .
-          cp deploy.sh deploy/deploy.sh
+          cp run.sh deploy/run.sh
 
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v3
@@ -69,22 +58,7 @@ jobs:
 
       - name: Push files to vm
         run: |
-          gcloud compute scp --zone=us-central1-a export.tar deploy.sh instance-2:  
-
-#      - id: compute-ssh
-#        uses: google-github-actions/ssh-compute@v1
-#        with:
-#          instance_name: 'instance-2'
-#          zone: 'us-central1-a'
-#          ssh_private_key: '${{ secrets.GCP_SSH_PRIVATE_KEY }}'
-#          script: '${{ github.workspace }}/deploy.sh'
+          gcloud compute scp --zone=us-central1-a export.tar run.sh instance-2:  
 
       - name: Run deploy process on VM
-        run: gcloud compute ssh instance-2 --zone=us-central1-a --command="sh deploy.sh"
-
-#      - id: 'Output'
-#        run: |-
-#          echo 'Output ls workspace'
-#          ls -la ${{ github.workspace }}
-#          echo '${{ steps.compute-ssh.outputs.stdout }}'
-#          echo '${{ steps.compute-ssh.outputs.stderr }}'
+        run: gcloud compute ssh instance-2 --zone=us-central1-a --command="sh run.sh"
