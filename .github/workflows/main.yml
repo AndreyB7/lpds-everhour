@@ -54,10 +54,9 @@ jobs:
         uses: google-github-actions/setup-gcloud@v2
         with:
           project_id: lpds-everhour
-          export_default_credentials: true
 
       - name: Push files to VM
-        run: gcloud compute scp export.tar run.sh instance-2:~ --zone=us-central1-a
+        run: gcloud compute scp export.tar run.sh instance-2:~ --zone=us-central1-a --ssh-key-file=${{env.GOOGLE_GHA_CREDS_PATH}}
 
       - name: Run deploy process on VM
         run: gcloud compute ssh instance-2 --zone=us-central1-a --command="sh run.sh"
