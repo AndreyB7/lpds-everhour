@@ -53,16 +53,8 @@ jobs:
       - name: push to vm
         run: |
           ls -la &&
+          gcloud info &&
           gcloud compute scp --project="lpds-everhour" --zone="us-central1-a" export.tar instance-2:  
 
-      - id: compute-ssh
-        uses: google-github-actions/ssh-compute@v1
-        with:
-          instance_name: 'instance-2'
-          zone: 'us-central1-a'
-          ssh_private_key: '${{ secrets.GCP_SSH_PRIVATE_KEY }}'
-          script: '${{ github.workspace }}/run.sh'
-
-
-#      - name: Run deploy process on VM
-#        run: gcloud compute ssh instance-2 --zone=us-central1-a --command="sh run.sh"
+      - name: Run deploy process on VM
+        run: gcloud compute ssh instance-2 --zone=us-central1-a --command="sh run.sh"
