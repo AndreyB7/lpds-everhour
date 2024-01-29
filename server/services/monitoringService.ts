@@ -1,6 +1,6 @@
 import { getProjectsParams } from "../db/parametersDB";
 import { getMonthCode, getTimeString, getWorkingDays } from "../helpers/time";
-import { tMonitoring, tProject } from "../types/types";
+import { tMonitoring, tProject } from "../../types/types";
 import fs from "fs";
 import path from "path";
 import ejs from "ejs";

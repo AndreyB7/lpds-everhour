@@ -9,7 +9,7 @@ export const metadata = {
 
 async function getData(): Promise<tProject[]> {
   // cached forever, will be revalidated on params update action
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/parameters`)
+  const res = await fetch(`${process.env.API_URL}/parameters`)
 
   if (!res.ok) {
     // This will activate the closest `error.js` Error Boundary

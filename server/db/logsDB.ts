@@ -1,4 +1,4 @@
-import { tMonitoring } from "../types/types";
+import { tMonitoring } from "../../types/types";
 import { logsDb } from "./db";
 import collections from "./collections";
 import { firestore } from "firebase-admin";

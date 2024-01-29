@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { EverhourData, EverhourRequestOptions } from '../types/types';
+import { EverhourData, EverhourRequestOptions } from '../../types/types';
 import everhourConfig from '../tokens/everhour-api';
 
 export const getEverhourAPIData = async (params: EverhourRequestOptions) => {

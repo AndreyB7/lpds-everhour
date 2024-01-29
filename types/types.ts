@@ -83,6 +83,7 @@ export type Project = {
   id?: string;
   shortName: string;
   fullName: string;
+  slug: string;
 }
 
 export type tProject = {
@@ -97,6 +98,13 @@ export type projectFormState = {
   message: string,
   errors?: {
     [K in keyof tProject]?: string[]
+  }
+}
+
+export type createProjectFormState = {
+  message: string,
+  errors?: {
+    [K in keyof Project]?: string[]
   }
 }
 

@@ -1,27 +1,41 @@
 'use client'
-import React from 'react';
-import { Button } from "@radix-ui/themes";
-import { Project } from "@/../types/types";
+import { createProjectFormState } from "@/../types/types";
+import Form, { Field } from "@/components/Form";
+import React from "react";
+import { useFormState } from "react-dom";
+import { addProjectFormAction } from "@/app/actions";
 
-const AddProjectForm = () => {
-  const handelAddProject = async () => {
-    const data: Project = {
-      shortName: 'SVT',
-      fullName: 'Saviynt'
-    }
-    await fetch(`${ process.env.NEXT_PUBLIC_API_URL }/addproject`, {
-      method: 'POST',
-      body: JSON.stringify(data),
-      headers: { 'Content-Type': 'application/json' },
-    })
-  }
-  const pending = false;
+const initialState = {
+  message: '',
+  errors: {},
+}
+
+export default function AddProjectForm() {
+  const [state, formAction] = useFormState<createProjectFormState, FormData>(addProjectFormAction, initialState)
+  const fields: Field[] = [
+    {
+      label: 'Slug (unique)',
+      value: '',
+      name: 'slug',
+      error: state?.errors?.slug?.join(', '),
+      type: 'text',
+    },
+    {
+      label: 'Short Name',
+      value: '',
+      name: 'shortName',
+      error: state?.errors?.shortName?.join(', '),
+      type: 'text'
+    },
+    {
+      label: 'Project Title',
+      value: '',
+      name: 'fullName',
+      error: state?.errors?.fullName?.join(', '),
+      type: 'text'
+    },
+  ]
   return (
-    <div>
-      <Button onClick={ handelAddProject } my={ "2" }
-              disabled={ pending }>{ pending ? 'PENDING...' : 'ADD PROJECT' }</Button>
-    </div>
+    <Form fields={ fields } formAction={ formAction } submitText={ 'CREATE' }/>
   );
-};
-
-export default AddProjectForm;
+}

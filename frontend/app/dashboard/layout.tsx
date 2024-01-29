@@ -10,7 +10,7 @@ const projects = [
 ]
 
 async function getData(): Promise<tProject[]> {
-  const res: Response = await fetch(`${ process.env.NEXT_PUBLIC_API_URL }/projects`, { next: { revalidate: process.env.NODE_ENV == 'development' ? 0 : 3600 } })
+  const res: Response = await fetch(`${ process.env.API_URL }/projects`, { next: { revalidate: process.env.NODE_ENV == 'development' ? 0 : 3600 } })
   if (!res.ok) {
     console.log(`Failed to fetch data ${ JSON.stringify(res.json()) }`);
     throw new Error(`Failed to fetch data`);
@@ -21,6 +21,7 @@ async function getData(): Promise<tProject[]> {
 export default async function Projects({ children }: {
   children: ReactNode
 }) {
+  // TODO dynamic projects menu
   const data = await getData();
   return (
     <Container size={ "3" }>
@@ -29,9 +30,6 @@ export default async function Projects({ children }: {
           <SecondaryNav links={ projects }/>
         </Box>
         <Box width={ "100%" } p={ "2" }>
-          <Box>
-            {JSON.stringify(data)}
-          </Box>
           { children }
         </Box>
       </Flex>

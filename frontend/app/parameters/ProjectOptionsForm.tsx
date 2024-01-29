@@ -1,11 +1,10 @@
 'use client'
 import React, { useState } from 'react';
-import { Button, Flex, Heading, Text, TextField } from "@radix-ui/themes";
+import { Button, Flex, Heading, Text } from "@radix-ui/themes";
 import { projectFormState, tProject } from "../../../types/types";
-import * as Label from "@radix-ui/react-label"
 import { actionUpdateParams } from "@/app/actions";
-import SubmitButton from "@/app/parameters/SubmitButton";
 import { useFormState } from "react-dom";
+import Form, { Field } from "@/components/Form";
 
 type Props = {
   projects: tProject[]
@@ -26,7 +25,7 @@ const ProjectOptionsForm = ({ projects }: Props) => {
     formAction(new FormData())
   }
 
-  const fields = [
+  const fields: Field[] = [
     {
       label: 'Project Short Name',
       value: currentProject.shortName,
@@ -44,7 +43,7 @@ const ProjectOptionsForm = ({ projects }: Props) => {
     },
     {
       label: 'Project time limit in hours',
-      value: currentProject.fullLimit,
+      value: currentProject.fullLimit.toString(),
       name: 'fullLimit',
       error: state?.errors?.fullLimit?.join(', '),
       type: 'number'
@@ -69,39 +68,21 @@ const ProjectOptionsForm = ({ projects }: Props) => {
     <Flex gap={ "2" } direction={ "column" } align={ 'center' } justify={ "center" }>
       <Heading size={ "4" } mt={ "4" } mb={ "2" }>Parameters { currentProject.shortName }</Heading>
       <Flex gap={ "2" } width={ "100%" } wrap={ "wrap" }>
-        <Flex gap={ "2" } direction={ "column" } style={ { flex: .3, minWidth: 150 } }>
+        {false &&
+          (<Flex gap={ "2" } direction={ "column" } style={ { flex: .3, minWidth: 150 } }>
           <Text>Projects:</Text>
           { projects.map(project =>
             <Button key={ project.shortName }
                     className={ project.shortName === currentProject.shortName ? 'current' : '' }
                     onClick={ () => selectProject(project) }>{ project.shortName }</Button>) }
           <Button disabled={ true }>ADD NEW</Button>
-        </Flex>
+        </Flex>)}
         <Flex px={ "5" } py={ "4" } className={ 'borderBox' } style={ { flex: 1, minWidth: 350 } }
               direction={ "column" } grow={ '1' }>
-          <form className={ "rt-Flex rt-r-display-flex rt-r-fd-column rt-r-jc-start rt-r-gap-4 rt-r-w-100%" }
-                action={ formAction }>
-            { fields.map(field =>
-              <Label.Root key={ field.value } htmlFor={ field.name } style={ { position: 'relative' } }>
-                { field.label }
-                <TextField.Input
-                  mt={ "1" }
-                  type={ field.type }
-                  name={ field.name }
-                  readOnly={ field?.readOnly }
-                  defaultValue={ field.value }
-                  className={ field.error?.length ? 'fieldError' : '' }
-                />
-                <Flex position={ "absolute" } translate={ "yes" }>
-                  <Text size={ '1' } color={ 'ruby' }>{ field.error }</Text>
-                </Flex>
-              </Label.Root>
-            ) }
-            <SubmitButton text={ "UPDATE" }/>
-          </form>
+          <Form fields={fields} formAction={formAction} submitText={'UPDATE'}/>
           { state?.message && <Flex justify={ "center" }><Text>{ state.message }</Text></Flex> }
         </Flex>
-        <Flex style={ { flex: .3, minWidth: 150 } }></Flex>
+        { false && (<Flex style={ { flex: .3, minWidth: 150 } }></Flex>) }
       </Flex>
     </Flex>
   );

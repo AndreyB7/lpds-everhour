@@ -1,4 +1,4 @@
-import { EverhourTask, EverhourTasks, EverhourTime, EverhourTimeByTask } from "../types/types";
+import { EverhourTask, EverhourTasks, EverhourTime, EverhourTimeByTask } from "../../types/types";
 import { getMonthCode, getTimeString } from "../helpers/time";
 import { getProjectEverhourData, getTasksSchema, getTimeSchema } from "../db/everhourDB";
 import { getProjectLastUpdate } from "../db/logsDB";

@@ -2,6 +2,10 @@ body {
     margin: 0;
 }
 
+* {
+    box-sizing: border-box;
+}
+
 body {
     --indigo-9: #465e75;
     --indigo-10: #465e75dd;

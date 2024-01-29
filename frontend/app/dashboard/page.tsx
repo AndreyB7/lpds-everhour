@@ -1,4 +1,4 @@
-import { Text, Flex, Container, Heading } from "@radix-ui/themes";
+import { Text, Flex, Heading } from "@radix-ui/themes";
 import { getServerSession } from "next-auth";
 import { authConfig } from "@/configs/auth";
 import { tMonitoring } from "@/../types/types";
@@ -10,7 +10,7 @@ export const metadata = {
 }
 
 async function getData(): Promise<tMonitoring[]> {
-  const res: Response = await fetch(`${ process.env.NEXT_PUBLIC_API_URL }/monitoring/data`, { next: { revalidate: process.env.NODE_ENV == 'development' ? 0 : 3600 } })
+  const res: Response = await fetch(`${ process.env.API_URL }/monitoring/data`, { next: { revalidate: process.env.NODE_ENV == 'development' ? 0 : 3600 } })
   if (!res.ok) {
     console.log(`Failed to fetch data ${ JSON.stringify(res.json()) }`);
     throw new Error(`Failed to fetch data`);

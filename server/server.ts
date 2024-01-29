@@ -7,11 +7,11 @@ import {
   setProjectParams
 } from "./db/parametersDB";
 import { runMonitoring, scheduledMonitoring, sendMonitoringInfo } from "./services/monitoringService";
-import { TeamMember, tProject } from "./types/types";
+import { TeamMember, tProject } from "../types/types";
 import { getProjectData } from "./services/projectService";
 import { getLastMonitoring } from "./db/logsDB";
 import everhourConfig from "./tokens/everhour-api";
-import { getProjects, setProject } from "./db/projectDB";
+import { createProject, getProjects } from "./db/projectDB";
 
 const app = express();
 app.use(express.json());
@@ -99,13 +99,14 @@ app.get("/api/projects", async (req, res) => {
   }
 });
 
-app.post("/api/addproject", async (req, res) => {
-  const data = req.body;
+app.post("/api/add-project", async (req, res) => {
+  const data = req.body
+  console.log('data',data)
   try {
-    await setProject(data)
+    await createProject(data)
     res.send({message: 'ok'})
   } catch (e) {
-    console.log(e)
+    console.log(`add-project error: ${JSON.stringify(e)}`)
     res.status(400).send({ error: JSON.stringify(e) })
   }
 });

@@ -1,7 +1,7 @@
 import { getEverhourAPIData } from "../api/everhourAPI";
 import { setProjectEverhourData } from "../db/everhourDB";
 import { getProjectsParams } from "../db/parametersDB";
-import { tProject } from "../types/types";
+import { tProject } from "../../types/types";
 import { getMonthCode } from "../helpers/time";
 
 // defaults

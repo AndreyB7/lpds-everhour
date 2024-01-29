@@ -1,6 +1,6 @@
 import { everhourDb, logsDb } from "./db";
 import collections from '../db/collections';
-import { EverhourData, EverhourProjectData } from "../types/types";
+import { EverhourData, EverhourProjectData } from "../../types/types";
 import { setProjectLastUpdate } from "./logsDB";
 
 // setters

@@ -1,5 +1,5 @@
 import { paramsDb } from "./db";
-import { tProject } from "../types/types";
+import { tProject } from "../../types/types";
 
 let projectParameters: tProject[] | null = null;
 
