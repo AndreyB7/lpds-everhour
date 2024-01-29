@@ -25,6 +25,7 @@ hr {
     border-color: var(--accent-color);
     border-style: solid;
     width: 100%;
+    margin: 0;
 }
 
 .theme-custom .radix-themes {
@@ -55,10 +56,6 @@ hr {
 
 .fieldError {
     border-color: var(--ruby-a11);
-}
-
-.navigation.secondary {
-    border-top:2px solid var(--accent-color)
 }
 
 @media print {

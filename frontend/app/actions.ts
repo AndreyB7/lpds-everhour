@@ -40,7 +40,7 @@ export async function actionUpdateParams(prevState: projectFormState, formData: 
   }
 
   try {
-    await fetch(`${ process.env.API_URL }/parameters`, {
+    await fetch(`${ process.env.NEXT_PUBLIC_API_URL }/parameters`, {
       method: 'POST',
       body: JSON.stringify(project),
       headers: { 'Content-Type': 'application/json' },
@@ -64,7 +64,7 @@ export const handleRefreshAction = async () => {
     message: 'Not Logged In',
   }
   try {
-    const res: Response = await fetch(`${ process.env.API_URL }/refresh`, { next: { revalidate: 0 } })
+    const res: Response = await fetch(`${ process.env.NEXT_PUBLIC_API_URL }/refresh`, { next: { revalidate: 0 } })
     revalidatePath('/project/[slug]', 'page')
     revalidatePath('/')
     return res.json()

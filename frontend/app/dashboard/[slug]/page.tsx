@@ -1,8 +1,7 @@
-import { Text, Flex, Container, Heading } from "@radix-ui/themes";
+import { Text, Flex, Container, Heading, Box } from "@radix-ui/themes";
 import { Metadata } from "next";
-import { EverhourTask } from "../../../../types/types";
+import { EverhourTask } from "@/../types/types";
 import * as React from "react";
-import Tree from "./tree";
 import { ClientDateTime } from "@/components/ClientDateTime";
 
 type ProjectData = {
@@ -25,7 +24,7 @@ export async function generateMetadata(
 }
 
 async function getData(slug: string): Promise<ProjectData> {
-  const res: Response = await fetch(`${ process.env.API_URL }/project/${ slug }`, { next: { revalidate: process.env.NODE_ENV == 'development' ? 0 : 3600 } })
+  const res: Response = await fetch(`${ process.env.NEXT_PUBLIC_API_URL }/project/${ slug }`, { next: { revalidate: process.env.NODE_ENV == 'development' ? 0 : 3600 } })
   if (!res.ok) {
     console.log(`Failed to fetch data ${ JSON.stringify(res.json()) }`);
     throw new Error(`Failed to fetch data`);
@@ -37,10 +36,12 @@ export default async function ProjectSlug({ params }: Props) {
   const data = await getData(params.slug)
 
   return (
-    <Container size={ "2" }>
+    <>
       <Flex gap="2" align={ "center" } direction={ "column" }>
-        <ClientDateTime date={ data?.lastUpdate?.time }/>
-        <Heading size={ "4" } mt={ "4" } mb={ "2" }>{ params.slug.toUpperCase() }</Heading>
+        <Box p={ "2" }>
+          <ClientDateTime date={ data?.lastUpdate?.time }/>
+        </Box>
+        <Heading size={ "4" } mt={ "2" } mb={ "2" }>{ params.slug.toUpperCase() }</Heading>
       </Flex>
       { data && <>
         <Flex justify={ "end" } align={ "end" }>
@@ -51,13 +52,19 @@ export default async function ProjectSlug({ params }: Props) {
         <hr/>
         { data?.tasks.length ?
           <Flex direction={ "column" }>
-            <Tree data={ data.tasks }/>
+            <Box style={{background:"lightgray", height:"200px"}}>
+              Reach text editor with project data
+            </Box>
+            <hr/>
+            <Box style={{background:"lightgray", height:"200px"}}>
+              Friday Report template
+            </Box>
           </Flex> :
           <Flex direction={ "column" }>
-            <Text align={"center"}>No data to display</Text>
+            <Text align={ "center" }>No data to display</Text>
           </Flex>
         }
       </> }
-    </Container>
+    </>
   )
 }

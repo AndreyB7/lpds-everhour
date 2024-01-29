@@ -4,16 +4,17 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 type Props = {
+  layout?: "column" | "row",
   links: {
     url: string,
     label: string
   }[]
 }
-const SecondaryNav = ({ links }: Props) => {
+const SecondaryNav = ({ links, layout = "column" }: Props) => {
   const pathname = usePathname()
   return (
-    <Flex className={ 'navigation secondary' } justify={ "center" } p={ "2" }>
-      <Flex gap="2" align="center" justify={ "center" } wrap={ "wrap" }>
+    <Flex className={ 'navigation secondary' } justify={ "center" }>
+      <Flex gap="2" align="center" direction={layout}>
         { links.map(link => (
           <Link key={ link.url } href={ link.url }>
             <Button size="1"

@@ -11,6 +11,7 @@ import { TeamMember, tProject } from "./types/types";
 import { getProjectData } from "./services/projectService";
 import { getLastMonitoring } from "./db/logsDB";
 import everhourConfig from "./tokens/everhour-api";
+import { getProjects, setProject } from "./db/projectDB";
 
 const app = express();
 app.use(express.json());
@@ -84,6 +85,28 @@ app.get("/api/project/:slug", async (req, res) => {
   } catch (e) {
     console.log(e)
     res.status(400).send({ error: 'Get project data error' })
+  }
+});
+
+// Projects
+app.get("/api/projects", async (req, res) => {
+  try {
+    const projects = await getProjects()
+    res.send(projects)
+  } catch (e) {
+    console.log(e)
+    res.status(400).send({ error: JSON.stringify(e) })
+  }
+});
+
+app.post("/api/addproject", async (req, res) => {
+  const data = req.body;
+  try {
+    await setProject(data)
+    res.send({message: 'ok'})
+  } catch (e) {
+    console.log(e)
+    res.status(400).send({ error: JSON.stringify(e) })
   }
 });
 

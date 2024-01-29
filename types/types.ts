@@ -79,6 +79,12 @@ export type EverhourRequestOptions = {
   loadParentTasks: boolean;
 }
 
+export type Project = {
+  id?: string;
+  shortName: string;
+  fullName: string;
+}
+
 export type tProject = {
   shortName: string;
   everhourId: string;

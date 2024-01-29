@@ -7,7 +7,7 @@ type TeamMember = {
 }
 
 async function getTeam(): Promise<TeamMember[]> {
-  const res: Response = await fetch(`${ process.env.API_URL }/team`, { next: { revalidate: process.env.NODE_ENV == 'development' ? 0 : 3600 } })
+  const res: Response = await fetch(`${ process.env.NEXT_PUBLIC_API_URL }/team`, { next: { revalidate: process.env.NODE_ENV == 'development' ? 0 : 3600 } })
   return res.json()
 }
 

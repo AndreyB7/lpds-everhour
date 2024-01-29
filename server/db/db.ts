@@ -12,3 +12,5 @@ const db = getFirestore(firebaseApp, process.env.NODE_ENV == 'development' ? 'lp
 export const everhourDb = db.collection(collections.everhour.name)
 export const logsDb = db.collection(collections.log.name)
 export const paramsDb = db.collection(collections.parameters.name)
+
+export const projectDb = db.collection('project')

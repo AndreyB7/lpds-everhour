@@ -1,5 +1,5 @@
 import { Container, Flex } from "@radix-ui/themes";
-import { tProject } from "../../../types/types";
+import { tProject } from "@/../types/types";
 import ProjectOptionsForm from "@/app/parameters/ProjectOptionsForm";
 
 export const metadata = {
