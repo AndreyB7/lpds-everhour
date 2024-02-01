@@ -22,7 +22,7 @@ export default async function ProjectSlug({ params }: Props) {
         <Heading size={ "4" } mt={ "2" } mb={ "2" }>{ params.slug.toUpperCase() }</Heading>
       </Flex>
       <Flex direction={ "column" }>
-        <Box mb={ "2" } py={ "6" } style={ { background: "#fff" } }>
+        <Box mb={ "2" } py={ "8" } style={ { background: "#fff" } }>
           <CustomEditor/>
         </Box>
       </Flex>

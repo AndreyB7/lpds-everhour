@@ -31,7 +31,7 @@ export async function actionUpdateParams(prevState: projectFormState, formData: 
       body: JSON.stringify(project),
       headers: { 'Content-Type': 'application/json' },
     })
-    revalidatePath('/')
+    revalidateTag('monitoringData')
     revalidateTag('projectOptions')
     return {
       message: 'Sucsess - parameters saved!',

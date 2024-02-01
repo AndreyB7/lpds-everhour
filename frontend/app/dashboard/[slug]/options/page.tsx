@@ -26,8 +26,6 @@ async function getData(): Promise<tProject[]> {
 export default async function Parameters({ params }: Props) {
   const projects = await getData()
 
-  console.log(projects)
-
   // TODO rebuild for single project use
   const currentProject = projects.filter(p => p.shortName === (params.slug).toUpperCase())
 

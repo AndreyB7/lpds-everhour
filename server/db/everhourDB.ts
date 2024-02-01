@@ -30,10 +30,9 @@ export const getTasksSchema = async () => {
 }
 
 export const getProjectEverhourData = async (projectShortName: string) => {
-  console.log('projectShortName',projectShortName)
-    const data = await everhourDb.doc(projectShortName).get()
-    if (!data.exists) {
-      throw Error('No such EH document!')
-    }
-    return data.data() as EverhourProjectData;
+  const data = await everhourDb.doc(projectShortName).get()
+  if (!data.exists) {
+    throw Error('No such EH document!')
+  }
+  return data.data() as EverhourProjectData;
 }
