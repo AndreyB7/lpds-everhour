@@ -48,23 +48,29 @@ const tempNamesDict: { [key: string]: string } = {
 export const sendMonitoringInfo = async (monitoringData: tMonitoring[]) => {
   const projectsParams = await getProjectsParams()
   const workingDays = getWorkingDays()
-  const workingDaysPassedPercent = (workingDays.passed.length / workingDays.total.length * 100).toFixed(0);
+  const workingDaysPassedPercent = Math.floor(workingDays.passed.length / workingDays.total.length * 100);
   const template = fs.readFileSync(path.join(__dirname, "../views/email.ejs")).toString()
   Promise.all(
     monitoringData.map(
       async (pm) => {
         const html = ejs.render(template, pm)
         const project = projectsParams.find(p => p.shortName === pm.shortName)
-        const projected = (+workingDaysPassedPercent > 0 ? +pm.percent / +workingDaysPassedPercent : 0) * (pm.fullLimit)
+        const projected = (+workingDaysPassedPercent > 0 ? +pm.percent / +workingDaysPassedPercent : 0) * pm.fullLimit
         if (!project) return
         sendMail(project.emailNotify, `Daily ${ project.shortName } Report`, html)
-        await slackMessage(
-          project.slackChatWebHook,
+        let slackText =
           `*${ tempNamesDict[pm.shortName] ?? pm.shortName } Monthly Retainer Update*` +
           `\nHours used / retained: ${ pm.timeTotal } / ${ pm.fullLimit }` +
           `\n% of hours used: ${ pm.percent }%` +
-          `\n% of working days passed: ${ workingDaysPassedPercent }%` +
-          `\nProjected hours at current rate: ${projected}`
+          `\n% of working days passed: ${ workingDaysPassedPercent }%`
+
+        if (workingDaysPassedPercent > 33 || +pm.percent > 50) {
+          slackText += `\nProjected hours at current rate: ${ projected }`
+        }
+
+        await slackMessage(
+          project.slackChatWebHook,
+          slackText
         )
       })
   ).catch(e => {
