@@ -3,7 +3,8 @@ import { createProjectFormState } from "@/../types/types";
 import Form, { Field } from "@/components/Form";
 import React from "react";
 import { useFormState } from "react-dom";
-import { addProjectFormAction } from "@/app/actions";
+import { addProjectFormAction } from "@/serverActions/actions";
+import { Flex, Heading, Text } from "@radix-ui/themes";
 
 const initialState = {
   message: '',
@@ -36,6 +37,11 @@ export default function AddProjectForm() {
     },
   ]
   return (
-    <Form fields={ fields } formAction={ formAction } submitText={ 'CREATE' }/>
+    <Flex px={ "5" } py={ "5" } className={ 'borderBox' } align={"center"} width={"100%"} style={ { flex: 1, minWidth: 350 } }
+          direction={ "column" } grow={ '1' }>
+      <Heading size={ "6" } mb={ "4" }>Add New Project</Heading>
+      <Form fields={ fields } formAction={ formAction } submitText={ 'CREATE' }/>
+      { state?.message && <Flex justify={ "center" }><Text>{ state.message }</Text></Flex> }
+    </Flex>
   );
 }

@@ -13,7 +13,7 @@ type Props = {
 const SecondaryNav = ({ links, layout = "column" }: Props) => {
   const pathname = usePathname()
   return (
-    <Flex className={ 'navigation secondary' } justify={ "center" }>
+    <Flex className={ 'navigation secondary' } justify={ "end" }>
       <Flex gap="2" align="center" direction={layout}>
         { links.map(link => (
           <Link key={ link.url } href={ link.url }>

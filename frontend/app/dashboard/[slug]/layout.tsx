@@ -7,15 +7,15 @@ type Props = {
   params: { slug: string }
 }
 export default async function Projects({ children, params }: Props) {
-  const projects =   [
+  const projectMenu =   [
     { label: 'Project', url: `/dashboard/${params.slug}` },
     { label: 'Tasks', url: `/dashboard/${params.slug}/tasks` },
     { label: 'Options', url: `/dashboard/${params.slug}/options` }
   ]
   return (
     <Container size={ "3" }>
-      <SecondaryNav layout={"row"} links={ projects }/>
-      <Flex direction={ "column" }>
+      <SecondaryNav layout={"row"} links={ projectMenu }/>
+      <Flex direction={ "column" } pt={"2"}>
         { children }
       </Flex>
     </Container>

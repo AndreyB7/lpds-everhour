@@ -12,7 +12,7 @@ export const metadata = {
 async function getData(): Promise<tMonitoring[]> {
   const res: Response = await fetch(`${ process.env.API_URL }/monitoring/data`, { next: { revalidate: process.env.NODE_ENV == 'development' ? 0 : 3600 } })
   if (!res.ok) {
-    console.log(`Failed to fetch data ${ JSON.stringify(res.json()) }`);
+    console.log(`Failed to fetch data ${ JSON.stringify(await res.json()) }`);
     throw new Error(`Failed to fetch data`);
   }
   return res.json()

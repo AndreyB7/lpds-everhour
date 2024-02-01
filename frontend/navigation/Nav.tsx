@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { Session } from "next-auth";
 import LoginButtons from "@/navigation/LoginButtons";
 import { useState } from "react";
-import { handleRefreshAction } from "@/app/actions";
+import { handleRefreshAction } from "@/serverActions/actions";
 import Loader from "@/icons/loader";
 
 const pagesPublic = [

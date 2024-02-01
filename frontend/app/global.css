@@ -53,9 +53,10 @@ hr {
 }
 
 .borderBox {
-    border: 2px solid var(--slate-a7);
+    border: 1px solid var(--slate-a7);
     border-radius: var(--radius-2);
     min-width: 250px;
+    background-color: #fdfdfd;
 }
 
 .fieldError {
@@ -70,4 +71,18 @@ hr {
     .MuiTreeItem-iconContainer {
         display: none !important;
     }
+}
+
+/* Editor*/
+
+#editorjs-container .cdx-checklist__item--checked .cdx-checklist__item-checkbox-check {
+    background-color: var(--indigo-9);
+    border-color: var(--indigo-9);
+}
+#editorjs-container .cdx-checklist__item-checkbox-check::before {
+    background-color: var(--indigo-9);
+}
+#editorjs-container .ce-popover-item--confirmation,
+#editorjs-container .ce-popover-item--confirmation:not(.ce-popover-item--no-hover):hover {
+    background-color: var(--indigo-9);
 }

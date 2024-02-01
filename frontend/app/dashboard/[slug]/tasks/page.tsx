@@ -27,8 +27,9 @@ export async function generateMetadata(
 async function getData(slug: string): Promise<ProjectData> {
   const res: Response = await fetch(`${ process.env.API_URL }/project/${ slug }`, { next: { revalidate: process.env.NODE_ENV == 'development' ? 0 : 3600 } })
   if (!res.ok) {
-    console.log(`Failed to fetch data ${ JSON.stringify(res.json()) }`);
-    throw new Error(`Failed to fetch data`);
+    console.log(`Failed to fetch data ${ JSON.stringify(await res.json()) }`);
+    // throw new Error(`Failed to fetch data`);
+    return null
   }
   return res.json()
 }

@@ -1,8 +1,8 @@
 'use client'
 import React, { useState } from 'react';
-import { Button, Flex, Heading, Text } from "@radix-ui/themes";
+import { Flex, Heading, Text } from "@radix-ui/themes";
 import { projectFormState, tProject } from "../../../types/types";
-import { actionUpdateParams } from "@/app/actions";
+import { actionUpdateParams } from "@/serverActions/actions";
 import { useFormState } from "react-dom";
 import Form, { Field } from "@/components/Form";
 
@@ -16,14 +16,9 @@ const initialState = {
 }
 const ProjectOptionsForm = ({ projects }: Props) => {
 
-  const [currentProject, setCurrentProject] = useState<tProject>(projects[0])
+  const currentProject = projects[0]
 
   const [state, formAction] = useFormState<projectFormState, FormData>(actionUpdateParams, initialState)
-
-  const selectProject = (project: tProject) => {
-    setCurrentProject(project)
-    formAction(new FormData())
-  }
 
   const fields: Field[] = [
     {
@@ -65,26 +60,12 @@ const ProjectOptionsForm = ({ projects }: Props) => {
   ]
 
   return (
-    <Flex gap={ "2" } direction={ "column" } align={ 'center' } justify={ "center" }>
-      <Heading size={ "4" } mt={ "4" } mb={ "2" }>Parameters { currentProject.shortName }</Heading>
-      <Flex gap={ "2" } width={ "100%" } wrap={ "wrap" }>
-        {false &&
-          (<Flex gap={ "2" } direction={ "column" } style={ { flex: .3, minWidth: 150 } }>
-          <Text>Projects:</Text>
-          { projects.map(project =>
-            <Button key={ project.shortName }
-                    className={ project.shortName === currentProject.shortName ? 'current' : '' }
-                    onClick={ () => selectProject(project) }>{ project.shortName }</Button>) }
-          <Button disabled={ true }>ADD NEW</Button>
-        </Flex>)}
-        <Flex px={ "5" } py={ "4" } className={ 'borderBox' } style={ { flex: 1, minWidth: 350 } }
+        <Flex px={ "5" } py={ "4" } className={ 'borderBox' } align={"center"} style={ { flex: 1, minWidth: 350 } }
               direction={ "column" } grow={ '1' }>
+          <Heading size={ "6" } mb={ "4" }>Parameters { currentProject.shortName }</Heading>
           <Form fields={fields} formAction={formAction} submitText={'UPDATE'}/>
           { state?.message && <Flex justify={ "center" }><Text>{ state.message }</Text></Flex> }
         </Flex>
-        { false && (<Flex style={ { flex: .3, minWidth: 150 } }></Flex>) }
-      </Flex>
-    </Flex>
   );
 };
 

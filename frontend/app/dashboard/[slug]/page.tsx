@@ -1,16 +1,7 @@
-import { Text, Flex, Heading, Box } from "@radix-ui/themes";
+import { Flex, Heading, Box } from "@radix-ui/themes";
 import { Metadata } from "next";
-import { EverhourTask } from "@/../types/types";
 import * as React from "react";
-import { ClientDateTime } from "@/components/ClientDateTime";
-
-type ProjectData = {
-  schemaTime: [],
-  schemaTasks: [],
-  tasks: EverhourTask[],
-  timeTotal: string
-  lastUpdate: { time: string }
-} | null
+import CustomEditor from "@/components/Editor/CustomEditor";
 
 type Props = { params: { slug: string } }
 
@@ -23,48 +14,18 @@ export async function generateMetadata(
   }
 }
 
-async function getData(slug: string): Promise<ProjectData> {
-  const res: Response = await fetch(`${ process.env.API_URL }/project/${ slug }`, { next: { revalidate: process.env.NODE_ENV == 'development' ? 0 : 3600 } })
-  if (!res.ok) {
-    console.log(`Failed to fetch data ${ JSON.stringify(res.json()) }`);
-    throw new Error(`Failed to fetch data`);
-  }
-  return res.json()
-}
-
 export default async function ProjectSlug({ params }: Props) {
-  const data = await getData(params.slug)
 
   return (
     <>
       <Flex gap="2" align={ "center" } direction={ "column" }>
-        <Box p={ "2" }>
-          <ClientDateTime date={ data?.lastUpdate?.time }/>
-        </Box>
         <Heading size={ "4" } mt={ "2" } mb={ "2" }>{ params.slug.toUpperCase() }</Heading>
       </Flex>
-      { data && <>
-        <Flex justify={ "end" } align={ "end" }>
-          <Text align={ "right" }>
-            Time Total: { data?.timeTotal }
-          </Text>
-        </Flex>
-        <hr/>
-        { data?.tasks.length ?
-          <Flex direction={ "column" }>
-            <Box mb={"2"} style={ { background: "lightgray", height: "200px" } }>
-              Reach text editor with project data
-            </Box>
-            <Box mb={"2"} style={ { background: "lightgray", height: "200px" } }>
-              Friday Report Data<br/>
-              Report template settings
-            </Box>
-          </Flex> :
-          <Flex direction={ "column" }>
-            <Text align={ "center" }>No data to display</Text>
-          </Flex>
-        }
-      </> }
+      <Flex direction={ "column" }>
+        <Box mb={ "2" } py={ "6" } style={ { background: "#fff" } }>
+          <CustomEditor/>
+        </Box>
+      </Flex>
     </>
   )
 }

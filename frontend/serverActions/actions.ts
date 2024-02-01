@@ -2,17 +2,9 @@
 
 import { getServerSession } from "next-auth";
 import { authConfig } from "@/configs/auth";
-import { z } from 'zod'
 import { Project, projectFormState, tProject } from "../../types/types";
-import { revalidatePath } from "next/cache";
-
-const schema = z.object({
-  shortName: z.string().min(1, { message: 'Required' }),
-  emailNotify: z.string().min(1, { message: 'Required' }),
-  everhourId: z.string().min(1, { message: 'Required' }),
-  fullLimit: z.number().gte(1),
-  slackChatWebHook: z.string().min(1, { message: 'Required' })
-})
+import { revalidatePath, revalidateTag } from "next/cache";
+import { addProjectSchema, updateProjectParamsSchema } from "@/serverActions/validationSchemas";
 
 export async function actionUpdateParams(prevState: projectFormState, formData: FormData): Promise<projectFormState> {
   const session = await getServerSession(authConfig);
@@ -23,15 +15,9 @@ export async function actionUpdateParams(prevState: projectFormState, formData: 
   const resetResponse = !formData.get('shortName');
   if (resetResponse) return { message: '', errors: {} }
 
-  const project: tProject = {
-    shortName: formData.get('shortName') as string,
-    emailNotify: formData.get('emailNotify') as string,
-    everhourId: formData.get('everhourId') as string,
-    fullLimit: Number(formData.get('fullLimit')) as number,
-    slackChatWebHook: formData.get('slackChatWebHook') as string,
-  }
+  const project = formDataToObject<tProject>(formData)
 
-  const validatedFields = schema.safeParse(project)
+  const validatedFields = updateProjectParamsSchema.safeParse(project)
   if (!validatedFields.success) {
     return {
       message: 'Submission failed - check form errors',
@@ -45,8 +31,8 @@ export async function actionUpdateParams(prevState: projectFormState, formData: 
       body: JSON.stringify(project),
       headers: { 'Content-Type': 'application/json' },
     })
-    revalidatePath('/parameters')
     revalidatePath('/')
+    revalidateTag('projectOptions')
     return {
       message: 'Sucsess - parameters saved!',
     }
@@ -73,26 +59,13 @@ export const handleRefreshAction = async () => {
   }
 }
 
-const addProjectSchema = z.object({
-  slug: z.string()
-    .min(1, { message: 'Required' })
-    .regex( /^[a-z0-9]+(?:-[a-z0-9]+)*$/, 'Enter a URL compatible string'),
-  shortName: z.string().min(1, { message: 'Required' }),
-  fullName: z.string().min(1, { message: 'Required' }),
-})
 export async function addProjectFormAction(prevState: projectFormState, formData: FormData): Promise<projectFormState> {
   const session = await getServerSession(authConfig);
   if (!session) return {
     message: 'Not Logged In',
   }
 
-  const project: Project = {
-    slug: formData.get('slug') as string,
-    shortName: formData.get('shortName') as string,
-    fullName: formData.get('fullName') as string,
-  }
-
-  console.log(project)
+  const project = formDataToObject<Project>(formData)
 
   const validatedFields = addProjectSchema.safeParse(project)
   if (!validatedFields.success) {
@@ -102,5 +75,31 @@ export async function addProjectFormAction(prevState: projectFormState, formData
     }
   }
 
-  return { message: JSON.stringify(project) }
+  try {
+    await fetch(`${ process.env.API_URL }/add-project`, {
+      method: 'POST',
+      body: JSON.stringify(project),
+      headers: { 'Content-Type': 'application/json' },
+    })
+    revalidatePath('/dashboard')
+    revalidateTag('projectOptions')
+    return {
+      message: 'Sucsess - project created!',
+    }
+  } catch (e) {
+    console.log(JSON.stringify(e))
+    return {
+      message: 'Save parameters error'
+    }
+  }
 }
+
+const formDataToObject = <T>(formData: FormData): T => {
+  const object = {} as T;
+
+  formData.forEach((value, key) => {
+    object[key as keyof T] = value as T[keyof T];
+  });
+
+  return object;
+};

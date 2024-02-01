@@ -10,7 +10,6 @@ export const metadata = {
 export default async function Home() {
   return (
     <Flex gap="2" width={ "100%" } align="center" direction="column">
-      <Heading>Add New Project</Heading>
       <AddProjectForm/>
     </Flex>
   )
