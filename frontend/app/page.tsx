@@ -36,7 +36,7 @@ export default async function Home() {
               <Heading size={ '3' }>{ data.shortName }</Heading>
               <hr/>
               <Text>Limit: { data.fullLimit }</Text>
-              <Text>Progress: { data.timeTotal } ({ data.percent })</Text>
+              <Text>Progress: { data.timeTotal } ({ data.percent }%)</Text>
               <hr/>
               <ClientDateTime date={ data?.time }/>
             </Flex>
