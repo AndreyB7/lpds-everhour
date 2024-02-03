@@ -1,3 +1,4 @@
+import Paragraph from "@editorjs/paragraph";
 import CheckList from "@editorjs/checklist";
 // import Code from "@editorjs/code";
 import Delimiter from "@editorjs/delimiter";
@@ -17,8 +18,13 @@ import Marker from "@editorjs/marker";
 import Header from "@editorjs/header"
 
 export const EDITOR_TOOLS = {
+  // paragraph: {
+  //   class: Paragraph,
+  //   inlineToolbar: true,
+  // },
   header: {
     class: Header,
+    inlineToolbar : true,
     config: {
       placeholder: 'Enter a Header',
       levels: [2, 3, 4],

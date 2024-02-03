@@ -1,6 +1,6 @@
 import { getProjectsParams } from "../db/parametersDB";
 import { getMonthCode, getWorkingDays } from "../helpers/time";
-import { tMonitoring, tProject } from "../types/types";
+import { tMonitoring, tProject } from "../../types/types";
 import fs from "fs";
 import path from "path";
 import ejs from "ejs";
@@ -55,7 +55,7 @@ export const sendMonitoringInfo = async (monitoringData: tMonitoring[]) => {
       async (pm) => {
         const html = ejs.render(template, pm)
         const project = projectsParams.find(p => p.shortName === pm.shortName)
-        const projected = (+workingDaysPassedPercent > 0 ? +pm.percent / +workingDaysPassedPercent : 0) * pm.fullLimit
+        const projected = Math.floor((+workingDaysPassedPercent > 0 ? +pm.percent / +workingDaysPassedPercent : 0) * pm.fullLimit)
         if (!project) return
         sendMail(project.emailNotify, `Daily ${ project.shortName } Report`, html)
         let slackText =

@@ -28,6 +28,7 @@
     "@editorjs/warning": "^1.4.0",
     "@mui/x-tree-view": "^6.17.0",
     "@radix-ui/themes": "^2.0.2",
+    "editorjs-html": "^3.4.3",
     "editorjs-react-renderer": "^3.5.1",
     "next": "^14.0.4",
     "next-auth": "^4.24.5",
