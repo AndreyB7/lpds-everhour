@@ -79,10 +79,52 @@ hr {
     background-color: var(--indigo-9);
     border-color: var(--indigo-9);
 }
+
 #editorjs-container .cdx-checklist__item-checkbox-check::before {
     background-color: var(--indigo-9);
 }
+
 #editorjs-container .ce-popover-item--confirmation,
 #editorjs-container .ce-popover-item--confirmation:not(.ce-popover-item--no-hover):hover {
     background-color: var(--indigo-9);
+}
+
+#editorjs-container .ce-block__content,
+#editorjs-container .ce-toolbar__content {
+    max-width: 100%;
+}
+.editor-wrapper {
+    position: relative;
+}
+.editor-wrapper .edit-toggle {
+    position: absolute;
+    top:0;
+    right: 0;
+    z-index: 2;
+}
+.editor-wrapper p {
+    line-height: 1.6em;
+    padding: .4em 0;
+    margin: 0;
+}
+
+.editor-wrapper .codex-editor__redactor {
+    padding-bottom: 0 !important;
+}
+
+.ce-toolbar__settings-btn,
+.ce-toolbar__plus {
+    background-color: #faffef;
+    border: 1px solid var(--accent-color)
+}
+
+#editorjs-container .ce-header,
+.heading {
+    padding: 0em 0 .5em;
+    margin: 0;
+    line-height: 1.25em
+}
+#editorjs-container .ce-block + .ce-block .ce-header,
+.editor-wrapper p + .heading {
+    padding-top: 1em;
 }

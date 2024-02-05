@@ -1,6 +1,6 @@
 'use client'
 import { createProjectFormState } from "@/../types/types";
-import Form, { Field } from "@/components/Form";
+import Form, { Field } from "@/components/Form/Form";
 import React from "react";
 import { useFormState } from "react-dom";
 import { addProjectFormAction } from "@/serverActions/actions";
@@ -35,7 +35,18 @@ export default function AddProjectForm() {
       error: state?.errors?.fullName?.join(', '),
       type: 'text'
     },
+    {
+      label: 'Time Tracking Type',
+      value: 'Project',
+      name: 'type',
+      error: state?.errors?.type?.join(', '),
+      type: 'select',
+      options: ['Retainer', 'Project']
+    },
   ]
+  if (state.errors) {
+    console.log(state.errors)
+  }
   return (
     <Flex px={ "5" } py={ "5" } className={ 'borderBox' } align={"center"} width={"100%"} style={ { flex: 1, minWidth: 350 } }
           direction={ "column" } grow={ '1' }>

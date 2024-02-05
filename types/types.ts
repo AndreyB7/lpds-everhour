@@ -79,11 +79,20 @@ export type EverhourRequestOptions = {
   loadParentTasks: boolean;
 }
 
-export type Project = {
+export type initProject = {
   id?: string;
   shortName: string;
   fullName: string;
   slug: string;
+  type: 'Retainer' | 'Project';
+}
+
+export type Project = initProject & {
+  id: string;
+  everhourId: string;
+  fullLimit: number;
+  emailNotify: string;
+  slackChatWebHook: string;
 }
 
 export type tProject = {
@@ -97,7 +106,7 @@ export type tProject = {
 export type projectFormState = {
   message: string,
   errors?: {
-    [K in keyof tProject]?: string[]
+    [K in keyof Project]?: string[]
   }
 }
 

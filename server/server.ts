@@ -11,7 +11,8 @@ import { TeamMember, tProject } from "../types/types";
 import { getProjectData } from "./services/projectService";
 import { getLastMonitoring } from "./db/logsDB";
 import everhourConfig from "./tokens/everhour-api";
-import { createProject, getProjects } from "./db/projectDB";
+import { createProject, deleteProject, getProject, getProjects, setProject } from "./db/projectDB";
+import { getPage, setPage } from "./db/pageDB";
 
 const app = express();
 app.use(express.json());
@@ -88,7 +89,7 @@ app.get("/api/project/:slug", async (req, res) => {
   }
 });
 
-// Projects
+// All Projects
 app.get("/api/projects", async (req, res) => {
   try {
     const projects = await getProjects()
@@ -99,17 +100,74 @@ app.get("/api/projects", async (req, res) => {
   }
 });
 
+// Get Projects options
+app.get("/api/project/:slug/options", async (req, res) => {
+  try {
+    const project = await getProject(req.params.slug)
+    res.send(project)
+  } catch (e) {
+    console.log(e)
+    res.status(400).send({ error: JSON.stringify(e) })
+  }
+});
+
+// Update Projects options
+app.post("/api/project/:slug/options", async (req, res) => {
+  const data = req.body
+  try {
+    await setProject(data)
+    res.send({message: 'ok'})
+  } catch (e) {
+    console.log(e)
+    res.status(400).send({ error: JSON.stringify(e) })
+  }
+});
+
+// Create Project
 app.post("/api/add-project", async (req, res) => {
   const data = req.body
-  console.log('data',data)
   try {
     await createProject(data)
+    res.send({message: 'ok'})
+  } catch (e) {
+    console.log(e)
+    res.status(400).send({ error: JSON.stringify(e) })
+  }
+});
+
+// Delete Project
+app.delete("/api/project/:slug/delete", async (req, res) => {
+  try {
+    await deleteProject(req.params.slug)
     res.send({message: 'ok'})
   } catch (e) {
     console.log(`add-project error: ${JSON.stringify(e)}`)
     res.status(400).send({ error: JSON.stringify(e) })
   }
 });
+
+// Page
+app.get("/api/page/:slug", async (req, res) => {
+  try {
+    const project = await getPage(req.params.slug)
+    res.send(project ?? { error: 'Not found'})
+  } catch (e) {
+    console.log(e)
+    res.status(400).send({ error: JSON.stringify(e) })
+  }
+});
+
+app.post("/api/page/:slug", async (req, res) => {
+  const data = req.body
+  try {
+    await setPage(req.params.slug, data)
+    res.send({message: 'ok'})
+  } catch (e) {
+    console.log(e)
+    res.status(400).send({ error: JSON.stringify(e) })
+  }
+});
+
 
 // scheduled tasks
 scheduleTask('17 13 * * 1-5', scheduledMonitoring)

@@ -1,7 +1,9 @@
 import { z } from "zod";
 
 export const updateProjectParamsSchema = z.object({
+  fullName: z.string().min(1, { message: 'Required' }),
   shortName: z.string().min(1, { message: 'Required' }),
+  type: z.string().min(1, { message: 'Required' }),
   emailNotify: z.string().min(1, { message: 'Required' }),
   everhourId: z.string().min(1, { message: 'Required' }),
   fullLimit: z.coerce.number().gte(1),

@@ -14,3 +14,5 @@ export const logsDb = db.collection(collections.log.name)
 export const paramsDb = db.collection(collections.parameters.name)
 
 export const projectDb = db.collection('project')
+
+export const pageDb = db.collection('page')

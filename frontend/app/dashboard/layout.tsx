@@ -3,14 +3,12 @@ import SecondaryNav from "@/components/SecondaryNav";
 import { Box, Container, Flex } from "@radix-ui/themes";
 import { Project, tProject } from "../../../types/types";
 
-const projects = [
-  { label: 'COA', url: '/dashboard/coa' },
-  { label: 'SVT', url: '/dashboard/svt' },
-  { label: 'Add New', url: '/dashboard/add-project' },
-]
-
 async function getData(): Promise<Project[]> {
-  const res: Response = await fetch(`${ process.env.API_URL }/projects`, { next: { revalidate: process.env.NODE_ENV == 'development' ? 0 : 3600 } })
+  const res: Response = await fetch(`${ process.env.API_URL }/projects`, {
+    next: {
+      revalidate: process.env.NODE_ENV == 'development' ? 0 : 3600,
+      tags: ['dashboard']
+    } })
   if (!res.ok) {
     console.log(`Failed to fetch data ${ JSON.stringify(res.json()) }`);
     throw new Error(`Failed to fetch data`);
@@ -21,7 +19,6 @@ async function getData(): Promise<Project[]> {
 export default async function Projects({ children }: {
   children: ReactNode
 }) {
-  // TODO dynamic projects menu
   const projects = await getData();
   const projectsLinks = projects.map(p => ({
     label: p.shortName,

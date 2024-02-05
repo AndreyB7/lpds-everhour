@@ -1,7 +1,8 @@
 import { Flex } from "@radix-ui/themes";
-import { tProject } from "@/../types/types";
-import ProjectOptionsForm from "@/app/parameters/ProjectOptionsForm";
+import { Project } from "@/../types/types";
+import ProjectOptionsForm from "@/app/dashboard/[slug]/options/ProjectOptionsForm";
 import React from "react";
+import DeleteProjectButton from "@/app/dashboard/[slug]/options/DeleteProjectButton";
 
 export const metadata = {
   title: 'Parameters',
@@ -10,9 +11,8 @@ export const metadata = {
 
 type Props = { params: { slug: string } }
 
-async function getData(): Promise<tProject[]> {
-  // cached forever, will be revalidated on params update action
-  const res = await fetch(`${ process.env.API_URL }/parameters`, { next: { tags: ['projectOptions'] }})
+async function getData(slug: string): Promise<Project> {
+  const res = await fetch(`${ process.env.API_URL }/project/${ slug }/options`, { next: { tags: [`projectOptions${ slug }`] } })
 
   if (!res.ok) {
     console.log(`Failed to fetch data ${ JSON.stringify(await res.json()) }`);
@@ -23,16 +23,16 @@ async function getData(): Promise<tProject[]> {
   return res.json()
 }
 
-export default async function Parameters({ params }: Props) {
-  const projects = await getData()
-
-  // TODO rebuild for single project use
-  const currentProject = projects.filter(p => p.shortName === (params.slug).toUpperCase())
+export default async function Options({ params }: Props) {
+  const project = await getData(params.slug)
 
   return (
     <>
-      { currentProject.length ? <ProjectOptionsForm projects={ currentProject }/> :
-        <Flex justify={ "center" }>No Data Loaded...</Flex> }
+      { project ? <ProjectOptionsForm project={ project }/> :
+        <Flex justify={ "center" }>No Project Data Loaded...</Flex> }
+      <Flex justify={ "end" } px={ "5" } py={ "4" }>
+        <DeleteProjectButton slug={ params.slug }/>
+      </Flex>
     </>
   )
 }

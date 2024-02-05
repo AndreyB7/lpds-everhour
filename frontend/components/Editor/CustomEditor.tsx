@@ -2,53 +2,54 @@
 
 import dynamic from "next/dynamic";
 import { useState } from "react";
-import PreviewRenderer from "@/components/Editor/PreviewRenderer";
-import { Button } from "@radix-ui/themes";
+import { Button, Flex } from "@radix-ui/themes";
+import Blocks from 'editorjs-blocks-react-renderer';
+import { Checklist } from "@/components/Editor/Checklist/ChecklistRenderer";
 
 const Editor = dynamic(() => import("./Editor"), {
   ssr: false,
 });
 
-const initData = {
-  "time": 1706881094690,
-  "blocks": [
-    {
-      "id": "M-2b-QSjVA",
-      "type": "header",
-      "data": {
-        "text": "Saved title 1",
-        "level": 3
-      }
-    },
-    {
-      "id": "UZ-a64LHpI",
-      "type": "paragraph",
-      "data": {
-        "text": "Paragraph 1 saved text"
-      }
-    },
-    {
-      "id": "Ky-00-EdUp",
-      "type": "paragraph",
-      "data": {
-        "text": "Paragraph 2 saved text"
-      }
-    }
-  ],
-  "version": "2.29.0"
+export type EditorJsData = {
+  time: number,
+  blocks: any[],
+  version: string,
 }
 
-export default function CustomEditor() {
+type Props = {
+  slug: string;
+  initData: EditorJsData
+}
+
+export default function CustomEditor({ initData, slug }: Props) {
   const [data, setData] = useState(initData)
   const [isEditMode, setIsEditMode] = useState(false);
+
+  const handleSave = async () => {
+    setIsEditMode(!isEditMode);
+    const res = await fetch(`/api/page/${ slug }`, {
+      method: 'POST',
+      body: JSON.stringify(data)
+    })
+  }
+
   return (
-    <>
-      <Editor
-        data={ data }
-        onChange={ setData }
-        holder="editorjs-container"
-      />
-      {/*{ data && <PreviewRenderer data={ data }/> }*/}
-    </>
+    <div className={ 'editor-wrapper' }>
+      <Flex className={ "edit-toggle" } justify={ "end" }>
+        <Button size={ "1" } onClick={ handleSave }>{ isEditMode ? 'Save' : 'Edit' }</Button>
+      </Flex>
+      { isEditMode ?
+        <Editor
+          data={ data }
+          onChange={ setData }
+          holder={ 'editorjs-container' }
+        /> :
+        <Blocks data={ data } renderers={ { checklist: Checklist } } config={ {
+          header: {
+            className: "heading"
+          }
+        } }/>
+      }
+    </div>
   );
 };
