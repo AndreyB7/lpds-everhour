@@ -8,6 +8,6 @@ cp .env.prod_server server/server/.env
 pm2 delete all
 cd server/server
 pm2 start server.js --name server
-cd ..
+cd ../..
 pm2 start frontend/server.js --name frontend
 rm export.tar run.sh
