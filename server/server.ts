@@ -38,34 +38,6 @@ app.get("/api/refresh", async (req, res) => {
   }
 })
 
-// API
-// app.get('/api/parameters', async (req, res) => {
-//   const projectsParams = await getProjectsParams();
-//   // convert seconds to hours
-//   const result = projectsParams.map(project => (
-//     { ...project, fullLimit: +project.fullLimit / 3600 }
-//   ))
-//   res.send(result);
-// })
-
-// app.post('/api/parameters', async (req, res) => {
-//   const paramsToUpdate: tProject = {
-//     shortName: req.body.shortName,
-//     everhourId: req.body.everhourId,
-//     fullLimit: req.body.fullLimit * 3600,
-//     emailNotify: req.body.emailNotify,
-//     slackChatWebHook: req.body.slackChatWebHook,
-//   }
-//
-//   try {
-//     await setProjectParams(paramsToUpdate.shortName, paramsToUpdate)
-//     res.send(paramsToUpdate)
-//   } catch (e) {
-//     console.log(e)
-//     res.status(501).send({ error: 'Save project parameters error' })
-//   }
-// })
-
 app.get("/api/monitoring", async (req, res) => {
   await runMonitoring()
   res.send({ status: `monitoring run ok: ${ new Date().toString() }` })
@@ -166,7 +138,7 @@ app.post("/api/page/:slug", async (req, res) => {
 
 
 // scheduled tasks
-scheduleTask('17 13 * * 1-5', scheduledMonitoring)
+scheduleTask('37 13 * * 1-5', scheduledMonitoring)
 
 app.listen(1337, () => {
   console.log("Server listening on port 1337")
