@@ -2,12 +2,8 @@ import "dotenv/config"
 import express from "express";
 import { scheduleTask } from "./services/cronService";
 import { everhourDataRefresh } from "./services/refreshService";
-import {
-  getProjectsParams,
-  setProjectParams
-} from "./db/parametersDB";
 import { runMonitoring, scheduledMonitoring, sendMonitoringInfo } from "./services/monitoringService";
-import { TeamMember, tProject } from "../types/types";
+import { TeamMember } from "../types/types";
 import { getProjectData } from "./services/projectService";
 import { getLastMonitoring } from "./db/logsDB";
 import everhourConfig from "./tokens/everhour-api";
@@ -43,32 +39,32 @@ app.get("/api/refresh", async (req, res) => {
 })
 
 // API
-app.get('/api/parameters', async (req, res) => {
-  const projectsParams = await getProjectsParams();
-  // convert seconds to hours
-  const result = projectsParams.map(project => (
-    { ...project, fullLimit: +project.fullLimit / 3600 }
-  ))
-  res.send(result);
-})
+// app.get('/api/parameters', async (req, res) => {
+//   const projectsParams = await getProjectsParams();
+//   // convert seconds to hours
+//   const result = projectsParams.map(project => (
+//     { ...project, fullLimit: +project.fullLimit / 3600 }
+//   ))
+//   res.send(result);
+// })
 
-app.post('/api/parameters', async (req, res) => {
-  const paramsToUpdate: tProject = {
-    shortName: req.body.shortName,
-    everhourId: req.body.everhourId,
-    fullLimit: req.body.fullLimit * 3600,
-    emailNotify: req.body.emailNotify,
-    slackChatWebHook: req.body.slackChatWebHook,
-  }
-
-  try {
-    await setProjectParams(paramsToUpdate.shortName, paramsToUpdate)
-    res.send(paramsToUpdate)
-  } catch (e) {
-    console.log(e)
-    res.status(501).send({ error: 'Save project parameters error' })
-  }
-})
+// app.post('/api/parameters', async (req, res) => {
+//   const paramsToUpdate: tProject = {
+//     shortName: req.body.shortName,
+//     everhourId: req.body.everhourId,
+//     fullLimit: req.body.fullLimit * 3600,
+//     emailNotify: req.body.emailNotify,
+//     slackChatWebHook: req.body.slackChatWebHook,
+//   }
+//
+//   try {
+//     await setProjectParams(paramsToUpdate.shortName, paramsToUpdate)
+//     res.send(paramsToUpdate)
+//   } catch (e) {
+//     console.log(e)
+//     res.status(501).send({ error: 'Save project parameters error' })
+//   }
+// })
 
 app.get("/api/monitoring", async (req, res) => {
   await runMonitoring()
@@ -81,8 +77,8 @@ app.get("/api/monitoring/data", async (req, res) => {
 
 app.get("/api/project/:slug", async (req, res) => {
   try {
-    const projectShortName = req.params.slug.toUpperCase()
-    res.send(await getProjectData(projectShortName))
+    const projectSlug = req.params.slug
+    res.send(await getProjectData(projectSlug))
   } catch (e) {
     console.log(e)
     res.status(400).send({ error: 'Get project data error' })

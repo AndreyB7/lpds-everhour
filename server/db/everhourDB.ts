@@ -4,17 +4,17 @@ import { EverhourData, EverhourProjectData } from "../../types/types";
 import { setProjectLastUpdate } from "./logsDB";
 
 // setters
-export const setProjectEverhourData = async (projectShortName: string, key: string, data: EverhourData) => {
+export const setProjectEverhourData = async (projectSlug: string, key: string, data: EverhourData) => {
 
   const today = new Date();
   try {
-    await everhourDb.doc(projectShortName).set(
+    await everhourDb.doc(projectSlug).set(
       {
         time: { [key]: JSON.stringify(data.time.data) },
         tasks: { [key]: JSON.stringify(data.tasks.data) },
       }, { merge: true }
     )
-    setProjectLastUpdate(projectShortName)
+    setProjectLastUpdate(projectSlug)
   } catch (e: any) {
     await logsDb.doc(collections.log.docs.error).set({ [today.toISOString()]: e.message }, { merge: true })
   }
@@ -29,8 +29,8 @@ export const getTasksSchema = async () => {
   return (await everhourDb.doc(collections.everhour.docs.tasksSchema).get()).data()?.schema as string[];
 }
 
-export const getProjectEverhourData = async (projectShortName: string) => {
-  const data = await everhourDb.doc(projectShortName).get()
+export const getProjectEverhourData = async (projectSlug: string) => {
+  const data = await everhourDb.doc(projectSlug).get()
   if (!data.exists) {
     throw Error('No such EH document!')
   }

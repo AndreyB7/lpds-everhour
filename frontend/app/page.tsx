@@ -32,8 +32,8 @@ export default async function Home() {
         { session?.user ? <Text>Signed in as { session.user.email }</Text> : <Text>Not Signed In</Text> }
         <Flex gap={ "2" } wrap={ "wrap" } justify={ "center" }>
           { monitoring && monitoring.map(data => (
-            <Flex className={ "borderBox" } p={ "2" } key={ data.shortName } direction={ "column" }>
-              <Heading size={ '3' }>{ data.shortName }</Heading>
+            <Flex className={ "borderBox" } p={ "2" } key={ data.slug } direction={ "column" }>
+              <Heading size={ '3' }>{ data.slug }</Heading>
               <hr/>
               <Text>Limit: { data.fullLimit }</Text>
               <Text>Progress: { data.timeTotal } ({ data.percent }%)</Text>

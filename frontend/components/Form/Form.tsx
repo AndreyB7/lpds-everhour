@@ -53,7 +53,7 @@ const Form = ({ fields, formAction, submitText = 'Submit' }: Props) => {
                   >
                     <Select.Trigger
                       mt={"1"}
-                      style={{width:'100%', padding: '15px 10px' }}
+                      style={{width:'100%', padding: '15px 8px' }}
                       className={ field.error?.length ? 'fieldError' : '' }/>
                     <Select.Content>
                       <Select.Group>

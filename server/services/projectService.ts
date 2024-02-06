@@ -61,11 +61,11 @@ export const createTaskTimeDict = <T>(data: string[], schema: string[]): T => {
   return dict
 }
 
-export const getProjectData = async (projectShortName: string) => {
+export const getProjectData = async (projectSlug: string) => {
   const currentMonth = getMonthCode(new Date())
   const timeSchema = await getTimeSchema()
   const tasksSchema = await getTasksSchema()
-  const projectData = await getProjectEverhourData(projectShortName)
+  const projectData = await getProjectEverhourData(projectSlug)
   const taskDataRaw: string[] = projectData.tasks[currentMonth] ? JSON.parse(projectData.tasks[currentMonth]) : []
   const taskData = convertDataToObject<EverhourTasks>(taskDataRaw, tasksSchema)
   const timeDataRaw = projectData.time[currentMonth] ? JSON.parse(projectData.time[currentMonth]) : []
@@ -73,7 +73,7 @@ export const getProjectData = async (projectShortName: string) => {
   let timeTotal = 0
   Object.values(timeData).forEach((taskTimes) => taskTimes.forEach(task => timeTotal += task.time))
   return {
-    lastUpdate: await getProjectLastUpdate(projectShortName),
+    lastUpdate: await getProjectLastUpdate(projectSlug),
     timeTotal: timeTotal > 0 ? getTimeString(timeTotal) : 'ND',
     tasks: buildTree(taskData, timeData),
   }

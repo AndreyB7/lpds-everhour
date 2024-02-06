@@ -1,6 +1,5 @@
-import { getProjectsParams } from "../db/parametersDB";
 import { getMonthCode, getWorkingDays } from "../helpers/time";
-import { tMonitoring, tProject } from "../../types/types";
+import { Project, tMonitoring } from "../../types/types";
 import fs from "fs";
 import path from "path";
 import ejs from "ejs";
@@ -9,44 +8,42 @@ import { slackMessage } from "./slackNotifierService";
 import { getProjectEverhourData } from "../db/everhourDB";
 import { everhourDataRefresh } from "./refreshService";
 import { getProjectLastUpdate, setLastMonitoring } from "../db/logsDB";
+import { getProjects } from "../db/projectDB";
 
-export const runProjectMonitoring = async (projectParams: tProject): Promise<tMonitoring> => {
+export const runProjectMonitoring = async (project: Project): Promise<tMonitoring> => {
   const currentMonthCode = getMonthCode(new Date());
-  const timeData = JSON.parse((await getProjectEverhourData(projectParams.shortName)).time[currentMonthCode])
+  const timeData = JSON.parse((await getProjectEverhourData(project.slug)).time[currentMonthCode])
   let timeTotal = 0
   if (timeData) {
     timeData.forEach((task: any) => timeTotal += task[4])
   }
 
-  const percentHoursUsed = (timeTotal / projectParams.fullLimit * 100).toFixed(0);
+  const percentHoursUsed = (timeTotal / (project.fullLimit * 3600) * 100).toFixed(0);
 
   return {
-    shortName: projectParams.shortName,
+    slug: project.slug,
+    fullName: project.fullName,
     timeTotal: Math.floor(timeTotal / 3600),
-    fullLimit: Math.floor(projectParams.fullLimit / 3600),
+    fullLimit: +project.fullLimit,
     percent: percentHoursUsed,
-    time: (await getProjectLastUpdate(projectParams.shortName)).timeString,
+    time: (await getProjectLastUpdate(project.slug)).timeString,
   }
 }
 
 export const runMonitoring = async () => {
-  const projectsParams = await getProjectsParams()
+  const projects = await getProjects()
   let monitoringData: tMonitoring[] = []
-  for (const p of projectsParams) {
-    monitoringData.push(await runProjectMonitoring(p))
+  for (const p of projects) {
+    if (p.everhourId) {
+      monitoringData.push(await runProjectMonitoring(p))
+    }
   }
   setLastMonitoring(monitoringData)
   return monitoringData
 }
 
-const tempNamesDict: { [key: string]: string } = {
-  'COA': 'Coalesce',
-  'SVT': 'Saviynt',
-  'SWH': 'Sourcewhale'
-};
-
 export const sendMonitoringInfo = async (monitoringData: tMonitoring[]) => {
-  const projectsParams = await getProjectsParams()
+  const projects = await getProjects()
   const workingDays = getWorkingDays()
   const workingDaysPassedPercent = Math.floor(workingDays.passed.length / workingDays.total.length * 100);
   const template = fs.readFileSync(path.join(__dirname, "../views/email.ejs")).toString()
@@ -54,12 +51,18 @@ export const sendMonitoringInfo = async (monitoringData: tMonitoring[]) => {
     monitoringData.map(
       async (pm) => {
         const html = ejs.render(template, pm)
-        const project = projectsParams.find(p => p.shortName === pm.shortName)
+        const project = projects.find(p => p.slug === pm.slug)
         const projected = Math.floor((+workingDaysPassedPercent > 0 ? +pm.percent / +workingDaysPassedPercent : 0) * pm.fullLimit)
         if (!project) return
-        sendMail(project.emailNotify, `Daily ${ project.shortName } Report`, html)
+
+        // mail
+        if (project.emailNotify) {
+          sendMail(project.emailNotify, `Daily ${ project.fullName } Report`, html)
+        }
+
+        // slack
         let slackText =
-          `*${ tempNamesDict[pm.shortName] ?? pm.shortName } Monthly Retainer Update*` +
+          `*${ pm.fullName } Monthly Retainer Update*` +
           `\nHours used / retained: ${ pm.timeTotal } / ${ pm.fullLimit }` +
           `\n% of hours used: ${ pm.percent }%` +
           `\n% of working days passed: ${ workingDaysPassedPercent }%`
@@ -68,10 +71,12 @@ export const sendMonitoringInfo = async (monitoringData: tMonitoring[]) => {
           slackText += `\nProjected hours at current rate: ${ projected }`
         }
 
-        await slackMessage(
-          project.slackChatWebHook,
-          slackText
-        )
+        if (project.slackChatWebHook) {
+          await slackMessage(
+            project.slackChatWebHook,
+            slackText
+          )
+        }
       })
   ).catch(e => {
     console.error(e)

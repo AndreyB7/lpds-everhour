@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 import SecondaryNav from "@/components/SecondaryNav";
-import { Box, Container, Flex } from "@radix-ui/themes";
+import { Container, Flex } from "@radix-ui/themes";
 
 type Props = {
   children: ReactNode

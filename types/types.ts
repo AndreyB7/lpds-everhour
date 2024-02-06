@@ -118,7 +118,8 @@ export type createProjectFormState = {
 }
 
 export type tMonitoring = {
-  shortName: string;
+  slug: string;
+  fullName: string;
   timeTotal: number;
   fullLimit: number;
   percent: string;

@@ -1,8 +1,8 @@
 import { getEverhourAPIData } from "../api/everhourAPI";
 import { setProjectEverhourData } from "../db/everhourDB";
-import { getProjectsParams } from "../db/parametersDB";
-import { tProject } from "../../types/types";
+import { Project } from "../../types/types";
 import { getMonthCode } from "../helpers/time";
+import { getProjects } from "../db/projectDB";
 
 // defaults
 const EHRequestParams = {
@@ -29,14 +29,14 @@ export const everhourDataRefresh = async () => {
     `${ monthCode }-${ lastDay.getDate() }`
   ];
 
-  const projects = await getProjectsParams()
+  const projects = await getProjects()
 
-  const refreshProject = async (project: tProject) => {
-    if (!project) return
+  const refreshProject = async (project: Project) => {
+    if (!project.everhourId) return
     EHRequestParams.projects = [project.everhourId]
     const data = await getEverhourAPIData(EHRequestParams)
     if (data) {
-      await setProjectEverhourData(project.shortName, monthCode, data)
+      await setProjectEverhourData(project.slug, monthCode, data)
     }
   }
 

@@ -20,10 +20,10 @@ export const getLastMonitoring = async () => {
 
 type tLastUpdate = {project: string, time: number, timeString: string}
 
-export const setProjectLastUpdate = async (projectShortName: string) => {
+export const setProjectLastUpdate = async (projectSlug: string) => {
   const today = new Date()
-  await logsDb.doc(`${ projectShortName }-lastUpdate`).set({
-    project: projectShortName,
+  await logsDb.doc(`${ projectSlug }-lastUpdate`).set({
+    project: projectSlug,
     time: today.getTime(),
     timeString: today.toISOString()
   });

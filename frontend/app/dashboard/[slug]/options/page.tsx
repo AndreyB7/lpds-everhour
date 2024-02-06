@@ -12,7 +12,13 @@ export const metadata = {
 type Props = { params: { slug: string } }
 
 async function getData(slug: string): Promise<Project> {
-  const res = await fetch(`${ process.env.API_URL }/project/${ slug }/options`, { next: { tags: [`projectOptions${ slug }`] } })
+
+  const res = await fetch(`${ process.env.API_URL }/project/${ slug }/options`, {
+    next: {
+      // revalidate: process.env.NODE_ENV == 'development' ? 0 : 3600,
+      tags: [`projectOptions${ slug }`]
+    }
+  })
 
   if (!res.ok) {
     console.log(`Failed to fetch data ${ JSON.stringify(await res.json()) }`);
