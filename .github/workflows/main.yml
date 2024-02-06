@@ -19,13 +19,10 @@ jobs:
 
       - name: npm install, build, and test
         run: |
-          cd server &&
-          npm ci &&
-          npm run build &&
-          cd ../frontend &&
-          npm ci &&
-          npm run build &&
-          cd .. &&
+          npm ci --prefix server &&
+          npm run build --prefix server &&
+          npm ci --prefix frontend &&
+          npm run build --prefix frontend &&
           mkdir export &&
           cp -r server/build export/server &&
           cp -r frontend/.next/standalone export/frontend &&
