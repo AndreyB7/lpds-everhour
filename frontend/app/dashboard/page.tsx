@@ -12,7 +12,7 @@ export const metadata = {
 async function getData(): Promise<tMonitoring[]> {
   const res: Response = await fetch(`${ process.env.API_URL }/monitoring/data`, {
     next: {
-      revalidate: process.env.NODE_ENV == 'development' ? 0 : 3600,
+      // revalidate: process.env.NODE_ENV == 'development' ? 0 : 3600,
       tags: ['monitoringData']
     }
   })
@@ -31,8 +31,8 @@ export default async function Home() {
       { session?.user ? <Text>Signed in as { session.user.email }</Text> : <Text>Not Signed In</Text> }
       <Flex gap={ "2" } wrap={ "wrap" } justify={ "center" }>
         { monitoring && monitoring.map(data => (
-          <Flex className={ "borderBox" } p={ "2" } key={ data.shortName } direction={ "column" }>
-            <Heading size={ '3' }>{ data.shortName }</Heading>
+          <Flex className={ "borderBox" } p={ "2" } key={ data.fullName } direction={ "column" }>
+            <Heading size={ '3' }>{ data.fullName }</Heading>
             <hr/>
             <Text>Limit: { data.fullLimit }</Text>
             <Text>Progress: { data.timeTotal } ({ data.percent })</Text>

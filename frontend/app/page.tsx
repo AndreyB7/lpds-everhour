@@ -12,7 +12,7 @@ export const metadata = {
 async function getData(): Promise<tMonitoring[]> {
   const res: Response = await fetch(`${ process.env.API_URL }/monitoring/data`, {
     next: {
-      revalidate: process.env.NODE_ENV == 'development' ? 0 : 3600,
+      // revalidate: process.env.NODE_ENV == 'development' ? 0 : 3600,
       tags: ['monitoringData']
     }
   })

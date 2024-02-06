@@ -83,8 +83,7 @@ export async function addProjectFormAction(prevState: projectFormState, formData
       headers: { 'Content-Type': 'application/json' },
     })
     if (res.ok) {
-      revalidatePath('/dashboard')
-      revalidateTag('projectOptions')
+      revalidateTag('dashboard')
       return {
         message: 'Sucsess - project created!',
       }

@@ -6,7 +6,7 @@ import { Project, tProject } from "../../../types/types";
 async function getData(): Promise<Project[]> {
   const res: Response = await fetch(`${ process.env.API_URL }/projects`, {
     next: {
-      revalidate: process.env.NODE_ENV == 'development' ? 0 : 3600,
+      // revalidate: process.env.NODE_ENV == 'development' ? 0 : 3600,
       tags: ['dashboard']
     } })
   if (!res.ok) {
