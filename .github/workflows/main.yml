@@ -21,7 +21,7 @@ jobs:
         run: |
           cd server &&
           npm ci &&
-          npm run build --prefix server &&
+          npm run build &&
           cd ../frontend &&
           npm ci &&
           npm run build &&
