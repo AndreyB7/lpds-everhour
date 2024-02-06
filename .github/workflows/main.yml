@@ -13,26 +13,26 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Set up Node.js
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'npm'
 
       - name: npm install, build, and test
         run: |
-          npm ci &&
-          npm run build &&
+          npm ci --prefix server &&
+          npm run build --prefix server &&
           npm ci --prefix frontend &&
           npm run build --prefix frontend &&
           mkdir export &&
-          cp -r build export/server &&
+          cp -r server/build export/server &&
           cp -r frontend/.next/standalone export/frontend &&
           mkdir deploy &&
           tar --exclude='.env' -czf deploy/export.tar -C export .
           cp run.sh deploy/run.sh
 
       - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: node-app
           path: deploy
@@ -42,7 +42,7 @@ jobs:
     needs: build
     steps:
       - name: Download artifact from build job
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: node-app
 

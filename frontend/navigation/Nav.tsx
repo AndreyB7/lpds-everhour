@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { Session } from "next-auth";
 import LoginButtons from "@/navigation/LoginButtons";
 import { useState } from "react";
-import { handleRefreshAction } from "@/app/actions";
+import { handleRefreshAction } from "@/serverActions/actions";
 import Loader from "@/icons/loader";
 
 const pagesPublic = [
@@ -13,9 +13,7 @@ const pagesPublic = [
 ]
 
 const pagesProtected = [
-  { label: 'Parameters', url: '/parameters' },
-  { label: 'Projects', url: '/project' },
-  { label: 'Team', url: '/team' },
+  { label: 'Dashboard', url: '/dashboard' },
 ]
 
 type Props = {
@@ -34,7 +32,7 @@ export default function Nav({ session }: Props) {
   }
 
   return (
-    <Flex className={ 'navigation' } justify={ "center" } p={ "2" }>
+    <Flex className={ 'navigation' } justify={ "end" } p={"2"}>
       <Flex gap="2" align="center" justify={ "center" } wrap={ "wrap" }>
         { pagesPublic.map(page => (
           <Link key={ page.url } href={ page.url }>
