@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import SecondaryNav from "@/components/SecondaryNav";
 import { Box, Container, Flex } from "@radix-ui/themes";
-import { Project, tProject } from "../../../types/types";
+import { Project } from "../../../types/types";
 
 async function getData(): Promise<Project[]> {
   const res: Response = await fetch(`${ process.env.API_URL }/projects`, {
