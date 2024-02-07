@@ -1,8 +1,8 @@
-import { Text, Flex, Container, Heading } from "@radix-ui/themes";
+import { Text, Flex, Container } from "@radix-ui/themes";
 import { getServerSession } from "next-auth";
 import { authConfig } from "@/configs/auth";
 import { tMonitoring } from "../../types/types";
-import { ClientDateTime } from "@/components/ClientDateTime";
+import MonitoringCard from "@/components/MonitoringCard";
 
 export const metadata = {
   title: 'Home',
@@ -32,14 +32,7 @@ export default async function Home() {
         { session?.user ? <Text>Signed in as { session.user.email }</Text> : <Text>Not Signed In</Text> }
         <Flex gap={ "2" } wrap={ "wrap" } justify={ "center" }>
           { monitoring && monitoring.map(data => (
-            <Flex className={ "borderBox" } p={ "2" } key={ data.slug } direction={ "column" }>
-              <Heading size={ '3' }>{ data.slug }</Heading>
-              <hr/>
-              <Text>Limit: { data.fullLimit }</Text>
-              <Text>Progress: { data.timeTotal } ({ data.percent }%)</Text>
-              <hr/>
-              <ClientDateTime date={ data?.time }/>
-            </Flex>
+            <MonitoringCard data={data}/>
           )) }
         </Flex>
       </Flex>
