@@ -32,6 +32,7 @@ export async function actionSetProjectOptions(prevState: projectFormState, formD
       body: JSON.stringify(project),
       headers: { 'Content-Type': 'application/json' },
     })
+    revalidatePath('dashboard/[slug]/options')
     revalidateTag(`projectOptions${project.slug}`)
     revalidateTag('monitoringData')
     return {

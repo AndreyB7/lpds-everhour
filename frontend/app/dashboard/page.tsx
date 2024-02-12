@@ -31,7 +31,7 @@ export default async function Home() {
       { session?.user ? <Text>Signed in as { session.user.email }</Text> : <Text>Not Signed In</Text> }
       <Flex gap={ "2" } wrap={ "wrap" } justify={ "center" }>
         { monitoring && monitoring.map(data => (
-          <MonitoringCard data={data}/>
+          <MonitoringCard key={ data.slug } data={data}/>
         )) }
       </Flex>
     </Flex>

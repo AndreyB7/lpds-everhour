@@ -8,7 +8,7 @@ type Props = {
 }
 const MonitoringCard = ({data}: Props) => {
   return (
-    <Flex className={ "borderBox" } p={ "2" } key={ data.slug } direction={ "column" }>
+    <Flex className={ "borderBox" } p={ "2" } direction={ "column" }>
       <Heading size={ '3' }>{ data.fullName }</Heading>
       <hr/>
       <Text>Limit: { data.fullLimit }</Text>
