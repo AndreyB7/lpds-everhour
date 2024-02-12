@@ -119,6 +119,7 @@ export type createProjectFormState = {
 
 export type tMonitoring = {
   slug: string;
+  type: 'Retainer' | 'Project';
   fullName: string;
   timeTotal: number;
   fullLimit: number;

@@ -22,6 +22,7 @@ export const runProjectMonitoring = async (project: Project): Promise<tMonitorin
 
   return {
     slug: project.slug,
+    type: project.type,
     fullName: project.fullName,
     timeTotal: Math.floor(timeTotal / 3600),
     fullLimit: +project.fullLimit,
@@ -62,7 +63,7 @@ export const sendMonitoringInfo = async (monitoringData: tMonitoring[]) => {
 
         // slack
         let slackText =
-          `*${ pm.fullName } Monthly Retainer Update*` +
+          `*${ pm.fullName } Monthly ${pm.type} Update*` +
           `\nHours used / retained: ${ pm.timeTotal } / ${ pm.fullLimit }` +
           `\n% of hours used: ${ pm.percent }%` +
           `\n% of working days passed: ${ workingDaysPassedPercent }%`
