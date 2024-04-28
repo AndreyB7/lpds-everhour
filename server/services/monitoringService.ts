@@ -21,7 +21,7 @@ export const runProjectMonitoring = async (project: Project): Promise<tMonitorin
     slug: project.slug,
     type: project.type,
     fullName: project.fullName,
-    timeTotal: Math.floor(timeTotal / 3600),
+    timeTotal: Math.round(timeTotal / 3600),
     fullLimit: +project.fullLimit,
     percent: percentHoursUsed,
     time: (await getProjectLastUpdate(project.slug)).timeString,
@@ -36,7 +36,7 @@ export const runMonitoring = async () => {
       monitoringData.push(await runProjectMonitoring(p))
     }
   }
-  setLastMonitoring(monitoringData)
+  await setLastMonitoring(monitoringData)
   return monitoringData
 }
 

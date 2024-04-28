@@ -27,7 +27,7 @@ export default function Nav({ session }: Props) {
   const handleRefresh = async () => {
     setIsRefreshing(true)
     const res = await handleRefreshAction()
-    console.log(res)
+    console.info(res)
     setIsRefreshing(false)
   }
 
