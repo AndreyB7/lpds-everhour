@@ -53,7 +53,8 @@ export const handleRefreshAction = async () => {
   }
   try {
     const res: Response = await fetch(`${ process.env.API_URL }/refresh`, { next: { revalidate: 0 } })
-    revalidatePath('/project/[slug]', 'page')
+    revalidateTag('tasks')
+    revalidateTag('dashboard')
     revalidatePath('/')
     return res.json()
   } catch (e) {

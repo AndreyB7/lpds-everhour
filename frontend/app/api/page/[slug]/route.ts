@@ -1,4 +1,4 @@
-import { revalidatePath, revalidateTag } from "next/cache";
+import { revalidateTag } from "next/cache";
 
 type Params = {
   params: {
@@ -9,8 +9,7 @@ type Params = {
 export async function GET(request: Request, { params }: Params) {
   const res = await fetch(`${ process.env.API_URL }/page/${ params.slug }`)
   if (res.ok) {
-    // revalidatePath('/dashboard')
-    revalidatePath('/', 'layout')
+    revalidateTag('dashboard')
     return Response.json(await res.json())
   }
   return new Response(`Server error: ${ (await res.json()).error }`, {
