@@ -1,22 +1,19 @@
-import { getMonthCode, getWorkingDays } from "../helpers/time";
+import { getWorkingDays } from "../helpers/time";
 import { Project, tMonitoring } from "../../types/types";
 import fs from "fs";
 import path from "path";
 import ejs from "ejs";
 import { sendMail } from "./mailerService";
 import { slackMessage } from "./slackNotifierService";
-import { getProjectEverhourData } from "../db/everhourDB";
 import { everhourDataRefresh } from "./refreshService";
 import { getProjectLastUpdate, setLastMonitoring } from "../db/logsDB";
 import { getProjects } from "../db/projectDB";
+import { getProjectData } from "./projectService";
 
 export const runProjectMonitoring = async (project: Project): Promise<tMonitoring> => {
-  const currentMonthCode = getMonthCode(new Date());
-  const timeData = JSON.parse((await getProjectEverhourData(project.slug)).time[currentMonthCode])
-  let timeTotal = 0
-  if (timeData) {
-    timeData.forEach((task: any) => timeTotal += task[4])
-  }
+  const needTaskTree = false;
+  const projectData= await getProjectData(project.slug, needTaskTree)
+  const timeTotal = projectData.timeTotalSeconds
 
   const percentHoursUsed = (timeTotal / (project.fullLimit * 3600) * 100).toFixed(0);
 

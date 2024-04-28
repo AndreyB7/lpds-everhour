@@ -61,20 +61,29 @@ export const createTaskTimeDict = <T>(data: string[], schema: string[]): T => {
   return dict
 }
 
-export const getProjectData = async (projectSlug: string) => {
+export const getProjectData = async (projectSlug: string, needTaskTree: boolean) => {
   const currentMonth = getMonthCode(new Date())
   const timeSchema = await getTimeSchema()
   const tasksSchema = await getTasksSchema()
   const projectData = await getProjectEverhourData(projectSlug)
   const taskDataRaw: string[] = projectData.tasks[currentMonth] ? JSON.parse(projectData.tasks[currentMonth]) : []
   const taskData = convertDataToObject<EverhourTasks>(taskDataRaw, tasksSchema)
+  const taskDataBillable = taskData.filter(tdi => !tdi.unbillable)
   const timeDataRaw = projectData.time[currentMonth] ? JSON.parse(projectData.time[currentMonth]) : []
   const timeData = createTaskTimeDict<EverhourTimeByTask>(timeDataRaw, timeSchema)
-  let timeTotal = 0
-  Object.values(timeData).forEach((taskTimes) => taskTimes.forEach(task => timeTotal += task.time))
+  let timeTotal = countTaskTimeTotal(taskDataBillable, timeData)
   return {
     lastUpdate: await getProjectLastUpdate(projectSlug),
     timeTotal: timeTotal > 0 ? getTimeString(timeTotal) : 'ND',
-    tasks: buildTree(taskData, timeData),
+    timeTotalSeconds: timeTotal,
+    tasks: needTaskTree ? buildTree(taskDataBillable, timeData) : [],
   }
+}
+
+export const countTaskTimeTotal = (taskData: EverhourTasks, timeData: EverhourTimeByTask) => {
+  let timeTotal = 0
+  if (taskData.length) {
+    taskData.forEach(tdItem => timeData[tdItem.id] && timeData[tdItem.id].forEach(task => timeTotal += task.time))
+  }
+  return timeTotal
 }

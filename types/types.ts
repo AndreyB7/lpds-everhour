@@ -65,7 +65,7 @@ export type EverhourTime = {
 }
 
 export type EverhourTimeByTask = {
-  [id:string]: EverhourTime[]
+  [taskId:string]: EverhourTime[]
 }
 
 export type EverhourRequestOptions = {

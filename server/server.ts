@@ -50,7 +50,8 @@ app.get("/api/monitoring/data", async (req, res) => {
 app.get("/api/project/:slug", async (req, res) => {
   try {
     const projectSlug = req.params.slug
-    res.send(await getProjectData(projectSlug))
+    const needTaskTree = true
+    res.send(await getProjectData(projectSlug, needTaskTree))
   } catch (e) {
     console.log(e)
     res.status(400).send({ error: 'Get project data error' })

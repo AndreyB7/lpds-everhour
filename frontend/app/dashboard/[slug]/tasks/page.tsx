@@ -6,10 +6,9 @@ import Tree from "./tree";
 import { ClientDateTime } from "@/components/ClientDateTime";
 
 type ProjectData = {
-  schemaTime: [],
-  schemaTasks: [],
   tasks: EverhourTask[],
-  timeTotal: string
+  timeTotal: string,
+  timeTotalSeconds: number,
   lastUpdate: { time: string }
 } | null
 
