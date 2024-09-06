@@ -132,3 +132,19 @@ export type TeamMember = {
   status: string,
   type: string
 }
+
+export type ProjectEverhourAPI = {
+  id: string
+  status: "open" | "archived"
+  name: string
+  budget: {
+    budget: number
+    progress: number
+    period: string
+  }
+}
+
+export type ProjectToRender = {
+  id: string
+  name: string
+} & ProjectEverhourAPI['budget']

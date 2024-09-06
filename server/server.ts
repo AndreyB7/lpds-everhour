@@ -9,6 +9,7 @@ import { getLastMonitoring } from "./db/logsDB";
 import everhourConfig from "./tokens/everhour-api";
 import { createProject, deleteProject, getProject, getProjects, setProject } from "./db/projectDB";
 import { getPage, setPage } from "./db/pageDB";
+import { runThresholdNotifier } from "./services/thresholdNotifierService";
 
 const app = express();
 app.use(express.json());
@@ -140,6 +141,11 @@ app.post("/api/page/:slug", async (req, res) => {
 
 // scheduled tasks
 scheduleTask('37 13 * * 1-5', scheduledMonitoring)
+
+// TODO:
+//  - emails
+//  - 50, 75, 90, 100 - threshold alerts + every 10% after
+scheduleTask('24 11 * * 1-5', runThresholdNotifier)
 
 app.listen(1337, () => {
   console.log("Server listening on port 1337")

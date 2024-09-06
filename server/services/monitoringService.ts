@@ -86,6 +86,8 @@ export const scheduledMonitoring = async () => {
   if (isWorkingDay) {
     await everhourDataRefresh()
     const monitoringData = await runMonitoring()
-    await sendMonitoringInfo(monitoringData)
+
+    // disabled for future update
+    // await sendMonitoringInfo(monitoringData)
   }
 }
