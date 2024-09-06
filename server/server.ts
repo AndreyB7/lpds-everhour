@@ -145,7 +145,7 @@ scheduleTask('37 13 * * 1-5', scheduledMonitoring)
 // TODO:
 //  - emails
 //  - 50, 75, 90, 100 - threshold alerts + every 10% after
-scheduleTask('24 11 * * 1-5', runThresholdNotifier)
+scheduleTask('24 13 * * 1-5', runThresholdNotifier)
 
 app.listen(1337, () => {
   console.log("Server listening on port 1337")
