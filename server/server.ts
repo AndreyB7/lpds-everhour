@@ -148,5 +148,5 @@ scheduleTask('37 13 * * 1-5', scheduledMonitoring)
 scheduleTask('24 13 * * 1-5', runThresholdNotifier)
 
 app.listen(1337, () => {
-  console.log("Server listening on port 1337")
+  console.log("Server listening on port 1337, v.05")
 })
