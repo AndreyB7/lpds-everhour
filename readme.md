@@ -88,3 +88,5 @@ Files will be in your user home folder on VM instance-2.
 Login to VM and 
 
 run ```sh manual-run.sh```
+
+<!-- rebuild trigger -->
